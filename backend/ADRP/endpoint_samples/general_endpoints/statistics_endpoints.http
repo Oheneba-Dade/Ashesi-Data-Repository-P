@@ -1,0 +1,5 @@
+### Get statistics
+GET http://localhost:8000/adrp/get_stats/
+#Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQyNzMyODkwLCJpYXQiOjE3NDI1NjAwOTAsImp0aSI6ImVkYzYxMGQyNWIwMDRiOWRhYzJhM2NmYjdkZDhlMGM3IiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.JRxPqk-cz4pt5RnK8Cqb1JRW4yfRrvc630cXKZvA3EQ
+
+###

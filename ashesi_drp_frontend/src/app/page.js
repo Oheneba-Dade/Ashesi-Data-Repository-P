@@ -1,101 +1,73 @@
-import Image from "next/image";
+import Slideshow from "@/components/Slideshow";
+import "./globals.css";
+import CustomButton from "@/components/CustomButton";
+import HeroBlock from "@/components/HeroBlock";
+import CollectionsContainer from "@/components/CollectionsContainer";
+import { BASE_URL } from "@/utils/constants";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+export default async function Home() {
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	let initialCollections = [];
+
+	try {
+		const response = await fetch(`${BASE_URL}/get_all_collections?page=1`);
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+		initialCollections = await response.json();
+	} catch (error) {
+		console.error("Failed to fetch featured collections:", error);
+	}
+
+	return (
+		<div className="relative w-full">
+			<Slideshow/>
+			<HeroBlock
+				header="Welcome to Ashesi Data Repository"
+				subheader="Welcome to the heart of Ashesi’s research excellence"
+				text="At Ashesi University, we are committed to fostering a culture of academic
+					excellence, collaboration, and ethical research. The Ashesi Research Data
+					Repository (ARDR) is designed to empower our researchers, faculty, and students
+					by offering a secure and dynamic platform for managing, archiving, and sharing
+					research data across all disciplines.
+					The ARDR is currently home to [X] active researchers, hosting [Y] research
+					datasets, including publicly accessible collections that promote interdisciplinary
+					knowledge sharing. By providing a seamless interface for research data
+					management, Ashesi University aims to support the growing movement towards
+					Open Science and FAIR data practices."
+				visibleButton={true}
+				customButtons={
+					[
+						<CustomButton
+							text="ALL COLLECTIONS"
+							bgColor="bg-ashesi-gray"
+							width="w-48"
+							href="/collections"
+						/>,
+						<CustomButton
+							text="CONTRIBUTE"
+							href="/add_collection"
+						/>
+					]
+				}
+			/>
+			<div className="sm:mt-96 md:mt-96 lg:mt-64 mb-[310px] max-h-[800px]"></div>
+			<h1 className="font-semibold w-full text-center text-xl">
+				FEATURED COLLECTIONS
+			</h1>
+			{/* some collections */}
+			<div className="mb-14 mx-auto w-full max-w-4xl">
+				<CollectionsContainer initialCollections={initialCollections} filterOn={false} />
+			</div>
+			<div className="flex justify-center mb-8">
+				<CustomButton
+					text="View All Collections"
+					bgColor="bg-ashesi-gray"
+					width="w-64"
+					href="/collections"
+				/>
+			</div>
+
+		</div>
+	);
 }

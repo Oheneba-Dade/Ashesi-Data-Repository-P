@@ -1,0 +1,98 @@
+### Create a collection
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxOTQ0ODAwLCJpYXQiOjE3NDE3NzIwMDAsImp0aSI6IjU2MDAwYzNjZDZiMjQ3Njc5OGU4N2JmYzZmYTA3ZDNkIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.-nCuq60-9IGiqjjgIrfLm8AYwdCPQOeuhunEh4in2P0
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+ADRP: Research on an Instiutional Repository
+--WebAppBoundary
+Content-Disposition: form-data; name="authors"
+
+{"name": "Author One", "email": "author1@example.com"},{"name": "Author Two", "email": "author2@example.com"}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/fake-doi-56789
+
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+research , data, elements
+
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+Research focuses on how to build an insititional repo
+
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+they represent something
+
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+False
+
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+its a great dataset
+
+--WebAppBoundary
+Content-Disposition: form-data; name="dataset_file"; filename="test_dataset.zip"
+Content-Type: application/zip
+
+<..test_dataset.zip
+--WebAppBoundary--
+
+
+### Get all collections
+GET http://localhost:8000/adrp/get_all_collections?page=1&status=rejected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxOTQ0ODAwLCJpYXQiOjE3NDE3NzIwMDAsImp0aSI6IjU2MDAwYzNjZDZiMjQ3Njc5OGU4N2JmYzZmYTA3ZDNkIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.-nCuq60-9IGiqjjgIrfLm8AYwdCPQOeuhunEh4in2P0
+
+
+### Get a specific collection
+GET http://localhost:8000/adrp/get_collection?collection_id=31
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxOTQ0ODAwLCJpYXQiOjE3NDE3NzIwMDAsImp0aSI6IjU2MDAwYzNjZDZiMjQ3Njc5OGU4N2JmYzZmYTA3ZDNkIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.-nCuq60-9IGiqjjgIrfLm8AYwdCPQOeuhunEh4in2P0
+
+
+### Query Collections
+GET http://localhost:8000/adrp/collections?title=test%20collection&keyword=data
+    &subject=AI&task=classification&datatype=ML&published_after=2024-01-01&published_before=2024-12-31
+#Authorization: Bearer ......
+
+### Approve a Collection
+PATCH http://localhost:8000/adrp/collection_status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+Content-Type: application/json
+
+{
+  "id": 2,
+  "approval_status": "approved"
+}
+
+### Reject a Collection
+PATCH http://localhost:8000/adrp/collection_status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+Content-Type: application/json
+
+{
+  "id": 2,
+  "approval_status": "rejected"
+}
+
+
+### Set a collection status to pending
+PATCH http://localhost:8000/adrp/collection_status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+Content-Type: application/json
+
+{
+  "id": 2,
+  "approval_status": "pending"
+}
+

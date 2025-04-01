@@ -1,0 +1,2 @@
+Please use the following OTP to log in to the Data Repository: {{ otp }}
+This OTP is valid for {{ otp_lifetime }} minutes and should not be shared with anyone.

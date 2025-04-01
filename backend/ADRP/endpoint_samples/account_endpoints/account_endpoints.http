@@ -1,0 +1,26 @@
+### GET OTP for a user
+GET http://16.171.195.89:8000/adrp/get_otp?email=samuel.blankson@ashesi.edu.gh
+
+### Login
+POST http://localhost:8000/adrp/login
+Content-Type: application/json
+
+{
+  "email":"samuel.blankson@ashesi.edu.gh",
+  "otp":"ZHD9IA"
+}
+
+### Tells you the user the token belongs to (TEST Purposes)
+GET http://localhost:8000/adrp/whoami
+Authorization: Bearer
+Content-Type: application/json
+
+
+### Refresh token
+POST http://localhost:8000/adrp/token/refresh
+Authorization: Bearer
+Content-Type: application/json
+
+{
+    "refresh": "put the refreshtoken here"
+}

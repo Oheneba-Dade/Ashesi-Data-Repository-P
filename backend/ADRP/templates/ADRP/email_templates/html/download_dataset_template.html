@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADRP Download Dataset</title>
+    <style>
+        :root {
+            --primary-color: #884243;
+            --secondary-color: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .banner {
+            background-color: var(--secondary-color);
+            {#color: var(--secondary-color);#}
+            padding: 15px 0;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .content {
+            background-color: var(--secondary-color);
+            padding: 30px;
+            text-align: center;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .otp {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+            letter-spacing: 6px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 10px 0;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Banner -->
+<div class="banner">
+    <img src="https://ashesi.edu.gh/wp-content/uploads/2023/06/Ashesi_University_Logo.webp" alt="logo" style="vertical-align: middle; height: 40px; margin-right: 10px;">
+   Ashesi University Data Repository
+</div>
+
+<!-- OTP Content -->
+<div class="content">
+    <h2>Download your Dataset</h2>
+    <p>Please use the following link to download your requested dataset</p>
+        <div class="otp" style="letter-spacing: normal; font-size: 16px; word-break: break-all;">
+            <a href="{{ dataset_link }}" style="color: var(--primary-color); text-decoration: underline;">
+                {{ dataset_link }}
+            </a>
+        </div>
+
+
+    <p>This link is valid for <strong style="color: var(--primary-color); font-weight: bold;">48 Hours</strong> and should not be shared with anyone.</p>
+    <p> Do note that all usages of this link will be associated with your account</p>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <a href="https://www.facebook.com/Ashesi/">Facebook</a> |
+    <a href="https://x.com/Ashesi">X (Twitter)</a> |
+    <a href="https://www.instagram.com/ashesi/">Instagram</a>
+</div>
+
+</body>
+</html>

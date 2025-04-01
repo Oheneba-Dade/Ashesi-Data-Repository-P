@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADRP OTP</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
+
+<!-- Top Banner -->
+<div style="background-color: #ffffff; padding: 15px 0; text-align: center; font-size: 20px; font-weight: bold;">
+    <img src="https://ashesi.edu.gh/wp-content/uploads/2023/06/Ashesi_University_Logo.webp" alt="logo" style="vertical-align: middle; height: 40px; margin-right: 10px;">
+    Ashesi University Data Repository
+</div>
+
+<!-- OTP Content -->
+<div style="background-color: #ffffff; padding: 30px; text-align: center; color: #333333; font-size: 16px;">
+    <h2 style="margin-top: 0;">Your One-Time Password (OTP)</h2>
+    <p style="margin: 10px 0;">Please use the following OTP to log in to the Data Repository:</p>
+    <div style="font-size: 32px; font-weight: bold; color: #884243; letter-spacing: 6px; margin: 20px 0;">
+        {{ otp }}
+    </div>
+    <p style="margin: 10px 0;">
+        This OTP is valid for
+        <strong style="color: #884243; font-weight: bold;">{{ otp_lifetime }} minutes</strong>
+        and should not be shared with anyone.
+    </p>
+</div>
+
+<!-- Footer -->
+<div style="background-color: #884243; color: #ffffff; padding: 10px 0; font-size: 14px; text-align: center;">
+    <a href="https://www.facebook.com/ashesi/" style="color: #ffffff; text-decoration: none; margin: 0 10px;">Facebook</a> |
+    <a href="https://x.com/ashesi" style="color: #ffffff; text-decoration: none; margin: 0 10px;">X (Twitter)</a> |
+    <a href="https://www.instagram.com/ashesi/" style="color: #ffffff; text-decoration: none; margin: 0 10px;">Instagram</a>
+</div>
+
+</body>
+</html>

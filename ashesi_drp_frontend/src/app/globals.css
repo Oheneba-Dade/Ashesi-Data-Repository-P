@@ -2,20 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+	display: none;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+	font-family: var(--font-montserrat), sans-serif;
 }
+
+.swiper-button-prev, .swiper-button-next {
+	color: white !important; /* Change arrow color */
+  }
+  
+  /* Change color on hover */
+.swiper-button-prev:hover, .swiper-button-next:hover {
+	color: #AA3C3F !important; 
+  }
+  
+/* for scrollbar */
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+	width: 12px; /* Adjust scrollbar width */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+	background: #f1f1f1; /* Light gray track */
+	border-radius: 10px; /* Rounded track */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+	background: #404041; /* Ashesi red */
+	border-radius: 10px;
+	border: 3px solid #f1f1f1; /* Adds spacing to push right */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #AA3C3F; /* Darker red on hover */
+  }
+  

@@ -1,0 +1,345 @@
+### Entry 1
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjI5MTgyLCJpYXQiOjE3NDE2MDc1ODIsImp0aSI6IjBmNmVlN2NjMDY1OTQ2Y2RhMzBjZDJlYjliNWU5NDc5IiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.C_e-DtjkXoOfG_94TKH95gkGIWRKYmAWqADCmcK6cco
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+"ADRP: Research on an Instiutional Repository"
+--WebAppBoundary
+Content-Disposition: form-data; name="authors"
+
+[
+    {"name": "Author One", "email": "author1@example.com"},
+    {"name": "Author Two", "email": "author2@example.com"}
+]
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/fake-doi-56789
+
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+["research" , "data", "elements"]
+
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+Research focuses on how to build an insititional repo
+
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+they represent something
+
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+False
+
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+its a great dataset
+
+--WebAppBoundary
+Content-Disposition: form-data; name="dataset_file"; filename="test_dataset.zip"
+Content-Type: application/zip
+
+<..test_dataset.zip
+--WebAppBoundary--
+
+
+### Entry 2
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Aerodynamic Efficiency in Formula 1 Car Design
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/f1-aero
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+Formula 1, aerodynamics, CFD simulations
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This study explores aerodynamic efficiency improvements in Formula 1 cars using computational fluid dynamics (CFD) simulations. The research analyzes drag reduction techniques and the impact of ground effect aerodynamics.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+CFD models, wind tunnel data, and real-world telemetry from F1 teams.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+False
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+Potential real-world applications extend to electric vehicle aerodynamics.
+--WebAppBoundary--
+
+
+### Entry 3
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Quantum Computing and Its Impact on Cryptographic Security
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/quantum-crypto
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+quantum computing, cryptography, RSA
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This research explores the implications of quantum computing on modern cryptographic techniques, with a focus on Shor's algorithm and its ability to break RSA encryption.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+Mathematical models, quantum circuit simulations, and security benchmarks.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+false
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+Post-quantum cryptography solutions are discussed as potential countermeasures.
+--WebAppBoundary--
+
+
+### Entry 4
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Deep Learning in Medical Diagnostics: Accuracy and Ethical Concerns
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/ai-medical-diagnostics
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+artificial intelligence, deep learning, medical diagnostics, ethics
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This study evaluates the performance of deep learning models in medical diagnostics, comparing their accuracy to human professionals while addressing ethical concerns around bias and patient privacy.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+Neural network architectures, hospital datasets, and statistical performance benchmarks.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+false
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+Regulatory frameworks for AI in healthcare are also discussed.
+--WebAppBoundary--
+
+
+### Entry 5
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Optimization of Renewable Energy Distribution in Smart Grids
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/smartgrid-renewables
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+renewable energy, smart grids, energy optimization, solar power
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This research investigates optimization techniques for integrating renewable energy sources into smart grids, ensuring efficient energy distribution and grid stability.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+Energy consumption models, grid simulation tools, and real-world deployment case studies.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+false
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+The study highlights the role of AI-driven demand forecasting in grid stability.
+--WebAppBoundary--
+
+
+### Entry 6
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Advancements in Ion Propulsion for Deep Space Missions
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/ion-propulsion
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+space exploration, ion propulsion, deep space travel, thrust efficiency
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This study explores the latest advancements in ion propulsion technology, focusing on efficiency improvements, fuel longevity, and its potential for deep space exploration.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+NASA mission data, propulsion system simulations, and experimental results from lab testing.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+false
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+The research compares ion propulsion with traditional chemical propulsion methods.
+--WebAppBoundary--
+
+
+### Entry 7
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Impact of Tire Degradation on Formula 1 Race Strategy
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/f1-tire-degradation
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+Formula 1, tire degradation, race strategy, Pirelli compounds
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This research examines how tire degradation affects race strategy in Formula 1, analyzing the impact of different Pirelli tire compounds on performance and pit stop timing.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+Telemetry data, race simulations, and historical F1 race strategies.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+false
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+The study evaluates the role of undercuts and overcuts in modern F1 races.
+--WebAppBoundary--
+
+
+### Entry 8
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxNjU1MDQwLCJpYXQiOjE3NDE2MzM0NDAsImp0aSI6IjM1MDhkNzBjNmY3MDRlODlhZDZhMjQwOTU4MmMxZGYxIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.vvXregBmtDfjdFzz-Wr-KaW9TgtIShxsyLHtxhs2uJg
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Effectiveness of Drag Reduction Systems (DRS) in Formula 1 Overtaking
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/f1-drs-effectiveness
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+Formula 1, DRS, overtaking, aerodynamics, race strategy
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This study analyzes the effectiveness of the Drag Reduction System (DRS) in Formula 1, focusing on its impact on overtaking opportunities, race dynamics, and driver performance.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+Race telemetry data, aerodynamic simulations, and overtaking statistics from multiple F1 seasons.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+false
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+The research discusses potential improvements and alternatives to the current DRS system.
+--WebAppBoundary--
+
+
+### Entry 9
+POST http://localhost:8000/adrp/create_collection
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQxOTQ0ODAwLCJpYXQiOjE3NDE3NzIwMDAsImp0aSI6IjU2MDAwYzNjZDZiMjQ3Njc5OGU4N2JmYzZmYTA3ZDNkIiwidXNlcl9pZCI6MTEsImF1ZCI6IkFEUlBURVNUX0NMSUVOVCIsImlzcyI6IkFEUlBURVNUX1NFUlZFIn0.-nCuq60-9IGiqjjgIrfLm8AYwdCPQOeuhunEh4in2P0
+
+--WebAppBoundary
+Content-Disposition: form-data; name="title"
+
+Fuel Efficiency Optimization in Formula 1 Hybrid Power Units
+--WebAppBoundary
+Content-Disposition: form-data; name="doi_link"
+
+https://doi.org/10.1234/f1-fuel-efficiency
+--WebAppBoundary
+Content-Disposition: form-data; name="keywords"
+
+Formula 1, hybrid engines, fuel efficiency, power unit optimization
+--WebAppBoundary
+Content-Disposition: form-data; name="abstract"
+
+This research investigates fuel efficiency strategies in modern Formula 1 hybrid power units, analyzing energy recovery systems (ERS) and fuel flow regulations.
+--WebAppBoundary
+Content-Disposition: form-data; name="instance_representation"
+
+Power unit telemetry, energy recovery system (ERS) data, and FIA fuel flow monitoring.
+--WebAppBoundary
+Content-Disposition: form-data; name="missing_values"
+
+false
+--WebAppBoundary
+Content-Disposition: form-data; name="comment"
+
+The study explores how teams optimize fuel usage without sacrificing performance.
+--WebAppBoundary
+Content-Disposition: form-data; name="authors"
+
+[{"name": "Author One", "email": "author1@example.com"},{"name": "Author Two", "email": "author2@example.com"}]
+
+
