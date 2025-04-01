@@ -13,7 +13,7 @@ export default async function About() {
 	};
 
 	try {
-		const response = await fetch(`${BASE_URL}/get_stats?`);
+		const response = await fetch(`/api/proxy/get_stats?`);
 		if (!response.ok) {
 			throw new Error(`HTTP error! Status: ${response.status}`);
 		}

@@ -40,7 +40,7 @@ export default function AdminCollections() {
         try {
         
           // get pending collections
-          const response = await fetch(`${BASE_URL}/get_all_collections/?status=pending`, {
+          const response = await fetch(`/api/proxy/get_all_collections/?status=pending`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export default function AdminCollections() {
           const data = await response.json();
           
           // get rejected collections
-          const response1 = await fetch(`${BASE_URL}/get_all_collections/?status=rejected`, {
+          const response1 = await fetch(`/api/proxy/get_all_collections/?status=rejected`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export default function AdminCollections() {
           const data1 = await response1.json();
           
           // get aproved collections
-          const response2 = await fetch(`${BASE_URL}/get_all_collections/?status=approved`, {
+          const response2 = await fetch(`/api/proxy/get_all_collections/?status=approved`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -134,7 +134,7 @@ export default function AdminCollections() {
     const handleApproval = async (collectionId, status) => {
         setIsLoading(true);
         try {
-          const response = await fetch(`${BASE_URL}/collection_status`, {
+          const response = await fetch(`/api/proxy/collection_status`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",

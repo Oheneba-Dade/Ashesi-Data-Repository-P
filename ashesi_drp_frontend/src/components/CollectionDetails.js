@@ -36,7 +36,7 @@ export default function CollectionsDetails({ initialCollection}) {
     const handleApproval = async (collectionId, status) => {
         setIsLoading(true);
         try {
-          const response = await fetch(`${BASE_URL}/collection_status`, {
+          const response = await fetch(`/api/proxy/collection_status`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",

@@ -13,7 +13,7 @@ export default function SearchBar() {
 
 	const handleSearch = async (e) => {
 		if (!searchText.trim()) return; // Prevent empty search
-		const url = new URL(`${BASE_URL}/collections`);
+		const url = new URL(`/api/proxy/collections`);
 		url.searchParams.append("title", searchText);
 
 		// Redirect to the collections page with the search query

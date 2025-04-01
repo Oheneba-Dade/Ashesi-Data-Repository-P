@@ -10,7 +10,7 @@ export default async function Home() {
 	let initialCollections = [];
 
 	try {
-		const response = await fetch(`${BASE_URL}/get_all_collections?page=1`);
+		const response = await fetch(`/api/proxy/get_all_collections?page=1`);
 		if (!response.ok) {
 			throw new Error(`HTTP error! Status: ${response.status}`);
 		}

@@ -54,7 +54,7 @@ export default function CollectionsContainer({ initialCollections, filterOn=true
     const handleResetFilter = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${BASE_URL}/get_all_collections/`, {
+            const response = await fetch(`/api/proxy/get_all_collections/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

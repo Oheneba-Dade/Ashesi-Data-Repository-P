@@ -100,7 +100,7 @@ export default function Filter({ onFilterResults, onResetFilter, setLoading }) {
 		};
 
 		try {
-			await sendFilterRequest(BASE_URL, queryParams, onFilterResults);
+			await sendFilterRequest("/api/proxy/", queryParams, onFilterResults);
 		} catch (error) {
 			console.error("Error sending GET request:", error);
 		} finally {

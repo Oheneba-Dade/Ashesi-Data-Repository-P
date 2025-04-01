@@ -6,7 +6,7 @@ export default async function Collections() {
 	let initialCollections = [];
 
 	try {
-		const response = await fetch(`${BASE_URL}/get_all_collections`);
+		const response = await fetch(`/api/proxy/get_all_collections`);
 		if (!response.ok) {
 			throw new Error(`HTTP error! Status: ${response.status}`);
 		}

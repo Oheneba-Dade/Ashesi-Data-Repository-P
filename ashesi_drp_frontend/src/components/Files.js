@@ -24,7 +24,7 @@ const FileTable = ({collection_id}) => {
   useEffect(() => {
     async function fetchFile() {
       try {
-        const response = await fetch(`${BASE_URL}/get_dataset/?collection_id=${collection_id}`);
+        const response = await fetch(`/api/proxy/get_dataset/?collection_id=${collection_id}`);
         const data = await response.json();
   
         // Ensure loading is shown for at least 2 seconds
@@ -49,7 +49,7 @@ const FileTable = ({collection_id}) => {
   // Function to handle second API call
   async function fetchAdditionalData(data) {
     try {
-      const response = await fetch(`${BASE_URL}/dataset_download/`, {
+      const response = await fetch(`/api/proxy/dataset_download/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -11,8 +11,8 @@ export default async function CollectionPage({ params }) {
     //The download count has a different endpoint, hence we fetch from both
     const collectionId = params.id;
 
-    const collectionData = await fetch(`${BASE_URL}/get_collection/?collection_id=${collectionId}`);
-    const downloadDataResponse = await fetch(`${BASE_URL}/get_dataset/?collection_id=${collectionId}`);
+    const collectionData = await fetch(`/api/proxy/get_collection/?collection_id=${collectionId}`);
+    const downloadDataResponse = await fetch(`/api/proxy/get_dataset/?collection_id=${collectionId}`);
     const downloadData = await downloadDataResponse.json();
     const initialCollection = await collectionData.json();
 
