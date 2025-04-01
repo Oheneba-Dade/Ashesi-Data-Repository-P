@@ -1,16 +1,36 @@
-export default async function handler(req, res) {
-    const apiUrl = `http://16.171.195.89:80/adrp${req.url.replace("/api/proxy", "")}`;
+export async function GET(req) {
+    const url = new URL(req.url);
+    const apiPath = url.pathname.replace("/api/proxy", ""); // Extract path
+
+    const apiUrl = `http://16.171.195.89:80/adrp${apiPath}`; // Append to backend URL
 
     const response = await fetch(apiUrl, {
-        method: req.method,
+        method: "GET",
         headers: {
-            ...req.headers,
-            host: "16.171.195.89",
             "Content-Type": "application/json",
         },
-        body: req.method !== "GET" ? JSON.stringify(req.body) : undefined,
     });
 
     const data = await response.json();
-    res.status(response.status).json(data);
+    return Response.json(data, { status: response.status });
+}
+
+export async function POST(req) {
+    const url = new URL(req.url);
+    const apiPath = url.pathname.replace("/api/proxy", "");
+
+    const body = await req.json();
+
+    const apiUrl = `http://16.171.195.89:80/adrp${apiPath}`;
+
+    const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+    return Response.json(data, { status: response.status });
 }
