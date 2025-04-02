@@ -9,9 +9,7 @@ export default function Card() {
         <div className="md:col-span-3">
                         
             {/* Title Section */}
-			<div>
-                <Skeleton width={200} height={20} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
-				
+			<div>			
 		        <hr className="my-3" />
 		        
                 <Skeleton width={700} height={40} baseColor="#dce3e8" highlightColor="#f0f4f8" className="mt-2"/>

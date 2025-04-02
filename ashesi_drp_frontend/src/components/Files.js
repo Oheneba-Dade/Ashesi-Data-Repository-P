@@ -18,9 +18,6 @@ const FileTable = ({collection_id}) => {
   const [specificReason, setSpecificReason] = useState("");
   const [email, setEmail] = useState("");
   
-  // hook for downloadable link
-  const [download, setDownload] = useState("");
-  
   useEffect(() => {
     fetchFile();
   }, [collection_id]);
@@ -44,6 +41,9 @@ const FileTable = ({collection_id}) => {
   // Function to handle second API call
   const fetchAdditionalData = async () => {
     if (!file || file.length === 0) return;
+    
+    setLoading(true);
+    
     try {
       const response = await fetch(`${BASE_URL}/dataset_download/`, {
         method: "POST",
@@ -51,9 +51,20 @@ const FileTable = ({collection_id}) => {
         body: JSON.stringify({ filename: file[0].file_name, collection_id }),
       });
       const result = await response.json();
-      setDownload(result);
+   
+      if (result.status == 200) {  
+        setTimeout(() => {
+          window.open(result.file_url, "_blank");
+          setLoading(false);
+        }, 1000);
+      }
+      else{
+        alert("Could not get download link");
+        setLoading(false);
+      }
     } catch (error) {
       console.error("Error in second fetch:", error);
+      setLoading(false);
     }
   };
   
@@ -77,17 +88,6 @@ const FileTable = ({collection_id}) => {
     setShowPopup(false);
     setLoading(true);
     await fetchAdditionalData();
-    
-    // Wait for the download URL to be set
-    setTimeout(() => {
-      if (download.file_url) {
-        window.open(download.file_url, "_blank");
-      } else {
-        alert("Download link not available. Please try again.");
-      }
-      
-      setLoading(false);
-    }, 4000);
     
     // Close the popup after submission
     setShowPopup(false);
