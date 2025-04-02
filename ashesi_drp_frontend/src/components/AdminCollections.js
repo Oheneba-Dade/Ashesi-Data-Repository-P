@@ -224,7 +224,6 @@ export default function AdminCollections() {
                   <th className="p-3">Title</th>
                   <th className="p-3">Submitted By</th>
                   <th className="p-3">Submission Date</th>
-                  <th className="p-3">Publication Date</th>
                   <th className="p-3">Content</th>
                   <th className="p-3">Abstract</th>
                   <th className="p-3">Status</th>
@@ -246,7 +245,6 @@ export default function AdminCollections() {
                         ) : (
                           <span>No author</span>
                         )}</td>
-                        <td className="p-3">{collection.date_of_publication.slice(0, 10)}</td>
                         <td className="p-3">{collection.date_of_publication.slice(0, 10)}</td>
                         <td className="p-3"><Link href={`/collections/${collection.id}`} className="text-ashesi-red font-light cursor-pointer">view</Link></td>
                         <td className="p-3"><button onClick={() => alert(collection.abstract || "No Abstract Available")} className="text-ashesi-red font-light cursor-pointer">abstract</button></td>

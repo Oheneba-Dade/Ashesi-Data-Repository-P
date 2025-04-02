@@ -20,9 +20,6 @@ export default function Navbar() {
 		setLogIn(localStorage.getItem("jwt"));
 		setUser(localStorage.getItem("user"));		
 	}, []);
-
-	// const payload = JSON.parse(atob(logIn.split(".")[1]));
-	// console.log(payload);
 	
 	// Function to determine active styles
 	const getLinkClass = (href) =>

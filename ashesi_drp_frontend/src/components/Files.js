@@ -22,48 +22,42 @@ const FileTable = ({collection_id}) => {
   const [download, setDownload] = useState("");
   
   useEffect(() => {
-    async function fetchFile() {
-      try {
-        const response = await fetch(`${BASE_URL}/get_dataset/?collection_id=${collection_id}`);
-        const data = await response.json();
-  
-        // Ensure loading is shown for at least 2 seconds
-        setTimeout(async () => {
-          setFile(data);
-          setLoading(false);
-  
-          // Call the second fetch using POST
-          if (data.length > 0){
-            await fetchAdditionalData(data);
-          }
-        }, 2000);
-      } catch (error) {
-        console.error("Error fetching collection:", error);
-        setLoading(false);
-      }
-    }
-  
     fetchFile();
   }, [collection_id]);
+
+  const fetchFile = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/get_dataset/?collection_id=${collection_id}`);
+      const data = await response.json();
+      
+      if (data.length > 0) {
+        setFile(data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching collection:", error);
+      setLoading(false);
+    }
+  }
   
   // Function to handle second API call
-  async function fetchAdditionalData(data) {
+  const fetchAdditionalData = async () => {
+    if (!file || file.length === 0) return;
     try {
       const response = await fetch(`${BASE_URL}/dataset_download/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ filename: data[0].file_name, collection_id: collection_id}),
-      });      
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename: file[0].file_name, collection_id }),
+      });
       const result = await response.json();
       setDownload(result);
     } catch (error) {
       console.error("Error in second fetch:", error);
     }
-  }
+  };
   
-
+  // Show loading
   if (loading) return (
       <div className="flex justify-center items-center h-32">
         <Image src="/animation/loading.gif" alt="Loading..." width={100} height={100} />
@@ -74,24 +68,32 @@ const FileTable = ({collection_id}) => {
   
   
   // Pop Up form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!reason.trim() || !email.trim()) {
       alert("Please enter a reason before downloading.");
       return;
     }
-
-    const submissionLink = download.file_url;
+    setShowPopup(false);
+    setLoading(true);
+    await fetchAdditionalData();
     
-    // Open the link in a new tab
-    window.open(submissionLink, "_blank");
-
+    // Wait for the download URL to be set
+    setTimeout(() => {
+      if (download.file_url) {
+        window.open(download.file_url, "_blank");
+      } else {
+        alert("Download link not available. Please try again.");
+      }
+      
+      setLoading(false);
+    }, 4000);
+    
     // Close the popup after submission
     setShowPopup(false);
-    setReason("");
-    setSpecificReason("");
-    setEmail("");
+    // setReason("");
+    // setSpecificReason("");
+    // setEmail("");
   };
 
   return (

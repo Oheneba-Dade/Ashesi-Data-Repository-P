@@ -30,7 +30,7 @@ export default function CollectionsContainer({ initialCollections, filterOn=true
         try {
             const response = await fetch(url);
             const data = await response.json();
-            console.log(response);
+            // console.log(response);
             setCollections(data);
         } catch (error) {
             console.error("Error fetching collections:", error);

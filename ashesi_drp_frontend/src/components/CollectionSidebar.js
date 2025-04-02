@@ -98,14 +98,14 @@ export default function CollectionSidebar({ initialCollection, downloadData}) {
         <div className="">
 	        { 
 		        isAdmin && (
-		            <div className="bg-gray-50 px-4 py-8 rounded-lg shadow-md h-auto self-start mb-4">
-				        <p className="text-sm font-medium text-ashesi-red">SUBMITTTED BY</p>
+		            <div className="bg-gray-50 px-4 py-4 rounded-lg shadow-md h-auto self-start mb-4">
+				        {/* <p className="text-sm font-medium text-ashesi-red">SUBMITTTED BY</p>
 				        <p className="text-sm text-gray-600 mt-2">
 							Email: <br/> <b>{collection.date_of_publication.slice(0,10)}</b>
 						</p>
 						<p className="text-sm text-gray-600 mt-2">
 							Date: <br/> <b>{collection.date_of_publication.slice(0,10)}</b>
-						</p>
+						</p> */}
 						<div className="p-3 text-center space-x-2 relative group">
 						  Status: <br/>
 						  {collection.approval_status === "approved" ? <FaCircle className="text-green-500 inline-block hover:text-green-600" /> :
@@ -189,7 +189,7 @@ export default function CollectionSidebar({ initialCollection, downloadData}) {
 		        <p className="text-sm font-medium text-ashesi-red">LICENSE</p>
 		        <p className="text-sm text-gray-600 mt-2">
 					This dataset is licensed under a 
-					<Link href="/" className="cursor-pointer underline text-blue-800 hover:text-blue-600"> Creative Commons Attribution 4.0 International (CC BY 4.0) license</Link>
+					<Link href="" className="cursor-pointer underline text-blue-800 hover:text-blue-600"> Creative Commons Attribution 4.0 International (CC BY 4.0) license</Link>
 				</p>
 				
 				<p className="mt-6 text-sm text-gray-600 text-justify">{collection.license ? collection.license : "No additional license"}</p>

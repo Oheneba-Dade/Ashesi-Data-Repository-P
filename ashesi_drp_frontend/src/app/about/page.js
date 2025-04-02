@@ -60,7 +60,7 @@ export default async function About() {
 							className="w-auto h-auto rounded-lg mb-4 border-4 border-ashesi-red"
 						/>
 
-						<div className="grid grid-cols-2 gap-2 mb-8">
+						<div className="grid grid-cols-2 gap-2 mb-8  justify-center items-center text-center h-16">
 							<StatBlock title={stats.collection_count} value="Collections" />
 							<StatBlock title={stats.author_count} value="Authors" />
 							<StatBlock title={stats.download_count} value="Downloads" />

@@ -2,7 +2,7 @@
 import TruncatedText from "@/components/TruncatedText";
 
 export default function CollectionItem({collection_id, title, authors, abstract, date_of_publication, doi_link, keywords }) {
-    console.log("CollectionItem Props:", { collection_id, title, authors, abstract, date_of_publication, doi_link, keywords });
+    // console.log("CollectionItem Props:", { collection_id, title, authors, abstract, date_of_publication, doi_link, keywords });
 
     const firstThreeKeywords = Array.isArray(keywords) && keywords.length > 0
         ? keywords[0]?.split(", ").slice(0, 3)

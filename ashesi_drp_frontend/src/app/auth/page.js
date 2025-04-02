@@ -65,7 +65,7 @@ export default function Page() {
     const GETOtp = async () => {
         try {
             localStorage.removeItem("jwt"); // this is here because we have to logout/clear jwt first, so we have to deal w that
-            console.log(email);
+            // console.log(email);
             const response = await AxiosInstance.get("get_otp", {
                 params: {email}
             });
@@ -123,12 +123,10 @@ export default function Page() {
             localStorage.setItem("jwt", response.data.access); 
             
             //admin setup
-            if (email.split("@")[0] == "reynolds.boakye" || email.split("@")[0]  == "oheneba.dade"){
-                localStorage.setItem("user", "admin");
-            }
-            else{
-                localStorage.setItem("user", "regular");
-            }
+            const payload = JSON.parse(atob(response.data.access.split(".")[1]));
+            localStorage.setItem("user", payload.role);
+            
+            //email setup
             localStorage.setItem("email", email); 
             
             // router.push("/collections");
