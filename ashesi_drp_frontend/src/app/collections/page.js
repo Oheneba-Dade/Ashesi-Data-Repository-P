@@ -2,11 +2,16 @@ import "../globals.css";
 import CollectionsContainer from "@/components/CollectionsContainer";
 import { BASE_URL } from "@/utils/constants";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function Collections() {
 	let initialCollections = [];
 
 	try {
-		const response = await fetch(`${BASE_URL}/get_all_collections`);
+		const response = await fetch(`${BASE_URL}/get_all_collections/`, {
+			cache: "no-store",
+		});
 		if (!response.ok) {
 			throw new Error(`HTTP error! Status: ${response.status}`);
 		}

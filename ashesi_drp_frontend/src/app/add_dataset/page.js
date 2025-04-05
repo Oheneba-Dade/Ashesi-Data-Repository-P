@@ -10,7 +10,7 @@ import CustomButton from "@/components/CustomButton";
 
 export default function AddDataset() {
 	const [keywords, setKeywords] = useState([]);
-	const router = useRouter()
+	const router = useRouter();
 
 	useEffect(() => {
         const jwt = localStorage.getItem("jwt");

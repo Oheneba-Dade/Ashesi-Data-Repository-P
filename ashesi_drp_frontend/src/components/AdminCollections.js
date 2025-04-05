@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaCircle, FaChevronDown } from "react-icons/fa";
 import CustomButton from "@/components/CustomButton";
@@ -40,14 +39,15 @@ export default function AdminCollections() {
         try {
         
           // get pending collections
-          const response = await fetch(`${BASE_URL}/get_all_collections/?status=pending`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization":"Bearer "+jwt,
-            },
+          const response =  await fetch(`${BASE_URL}/get_all_collections/?status=pending`, {
+              method: "GET",
+              cache: "no-store",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${jwt}`,
+              },
           });
-      
+
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
@@ -70,12 +70,13 @@ export default function AdminCollections() {
           const data1 = await response1.json();
           
           // get aproved collections
-          const response2 = await fetch(`${BASE_URL}/get_all_collections/?status=approved`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization":"Bearer "+jwt,
-            },
+          const response2 =  await fetch(`${BASE_URL}/get_all_collections/?status=approved`, {
+              method: "GET",
+              cache: "no-store",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${jwt}`,
+              },
           });
       
           if (!response2.ok) {
