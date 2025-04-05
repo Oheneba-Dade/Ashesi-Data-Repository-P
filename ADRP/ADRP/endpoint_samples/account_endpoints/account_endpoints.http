@@ -1,13 +1,18 @@
 ### GET OTP for a user
-GET http://16.171.195.89:8000/adrp/get_otp?email=samuel.blankson@ashesi.edu.gh
+GET https://adrp-test-api-pq5km.ondigitalocean.app/adrp/get_otp?email=sblank.blankson@gmail.com
+
+
+### GET OTP for a user
+GET https://adrp-test-api-pq5km.ondigitalocean.app/adrp/get_otp?email=samuel.blankson@ashesi.edu
+
 
 ### Login
 POST http://localhost:8000/adrp/login
 Content-Type: application/json
 
 {
-  "email":"samuel.blankson@ashesi.edu.gh",
-  "otp":"ZHD9IA"
+  "email":"sblank.blankson@gmail.com",
+  "otp":"TDOU56"
 }
 
 ### Tells you the user the token belongs to (TEST Purposes)
@@ -24,3 +29,7 @@ Content-Type: application/json
 {
     "refresh": "put the refreshtoken here"
 }
+
+
+### new
+GET https://checkcoverage.apple.com/

@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM --platform=linux/amd64 python:3.11-slim
 
 WORKDIR /app
 
@@ -13,4 +13,4 @@ COPY . .
 ENV PYTHONUNBUFFERED=1
 
 # Gunicorn command
-CMD ["gunicorn", "ADRP.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
+CMD ["/usr/local/bin/gunicorn", "ADRP.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]

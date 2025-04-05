@@ -127,7 +127,7 @@ class Collection(models.Model):
                           help_text="Comma-separated keywords for search and filtering.")
     date_of_publication = models.DateTimeField(default=timezone.now)
     comment = models.TextField(blank=True, null=True)
-    doi_link = models.URLField(max_length=500, null=True)
+    doi_link = models.URLField(max_length=500, null=True, blank=True)
     instance_representation = models.CharField(max_length=500, blank=True, null=True, help_text="What do the instances "
                                                                                                 "in the dataset represent")
     view_count = models.IntegerField(default=0)
