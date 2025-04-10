@@ -3,7 +3,7 @@ import boto3
 from django.conf import settings
 from ...settings import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME, AWS_S3_REGION_NAME
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError, BotoCoreError
-from .helper import extract_filename
+from .helper import extract_filename, rename
 import logging
 
 logger = logging.getLogger(__name__)
@@ -40,6 +40,9 @@ def upload_dataset_to_bucket(file_obj, filename, collection_id):
         str: The URL of the uploaded file, or None if an error occurs.
     """
     try:
+        # rename file
+        filename = rename(filename=filename)
+
         s3_client = s3_client_connection()
         bucket_name = settings.AWS_STORAGE_BUCKET_NAME
         key = f'{collection_id}-{filename}'  # Unique key for the file in the bucket

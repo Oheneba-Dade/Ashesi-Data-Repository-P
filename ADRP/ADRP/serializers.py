@@ -34,7 +34,8 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Collection
-        fields = ['id', 'title', 'doi_link', 'keywords', 'abstract', 'instance_representation', 'comment', 'date_of_publication', 'approval_status', 'view_count',  'authors']
+        fields = ['id', 'title', 'doi_link', 'keywords', 'abstract', 'instance_representation', 'comment',
+                  'date_of_publication', 'approval_status', 'view_count',  'authors']
 
     def create(self, validated_data):
         # authors_data = validated_data.pop('authors', [])
@@ -47,6 +48,27 @@ class CollectionSerializer(serializers.ModelSerializer):
         #     collection.authors.add(author)
 
         return collection
+
+    @staticmethod
+    def flip_http_type(link):
+        """Takes a link and converts it between http/https"""
+
+        if not isinstance(link, str):  # Handle None or non-string input
+            return None
+
+        if link.startswith("http://"):
+            return link.replace("http://", "https://", 1)
+        elif link.startswith("https://"):
+            return link.replace("https://", "http://", 1)
+
+        return link
+
+    @staticmethod
+    def flip_pagination_links(response):
+        response.data['next'] = CollectionSerializer.flip_http_type(response.data['next'])
+        response.data['previous'] = CollectionSerializer.flip_http_type(response.data['previous'])
+
+        return response
 
     @staticmethod
     def validate_status(status):

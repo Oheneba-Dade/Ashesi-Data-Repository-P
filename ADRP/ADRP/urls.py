@@ -34,6 +34,7 @@ urlpatterns = [
     path("adrp/create_collection", create_collection),
     path("adrp/collections", CollectionListView.as_view(), name="collection-list"),
     path("adrp/collection_status", change_collection_status),
+    path("adrp/upload_collection", upload_collection, name='upload_collection'),
 
     # Account views
     path("adrp/get_otp",get_OTP),

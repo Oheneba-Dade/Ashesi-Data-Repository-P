@@ -24,7 +24,6 @@ def create_collection(user, collection):
     new_collection = Collection(uploaded_by=user, **collection)
     new_collection.save()
 
-
     return new_collection
 
 
@@ -48,8 +47,12 @@ def get_all_collections(request, status, admin=False):
     lazy_query = Collection.objects.all() if status == "all" else Collection.objects.filter(approval_status=status)
     results = paginator.paginate_queryset(lazy_query, request)
     serializer = CollectionSerializer(results, many=True)
+    paginated_response = paginator.get_paginated_response(serializer.data)
 
-    return paginator.get_paginated_response(serializer.data)
+    fixed_response = CollectionSerializer.flip_pagination_links(paginated_response)
+
+    # return paginator.get_paginated_response(serializer.data)
+    return fixed_response
 
 
 def change_collection_status(collection_id, status):
@@ -129,5 +132,3 @@ def save_authors(request_obj, collection: Collection):
         collection.authors.add(obj)
         if created:
             increment_global_author_count()
-
-

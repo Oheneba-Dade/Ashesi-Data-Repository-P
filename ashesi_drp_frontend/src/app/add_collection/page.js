@@ -97,6 +97,7 @@ export default function AddDataset() {
 		const zipped_file = document.getElementById("data-file").files[0];
 		const comments = document.getElementById("comments").value;
 
+
 		const authors = authorGroups.map(group => {
 			const nameField = group.find(field => field.name === 'name');
 			const emailField = group.find(field => field.name === 'email');
@@ -107,7 +108,7 @@ export default function AddDataset() {
 		});
 
 		try{
-			const response = await AxiosInstance.post("create_collection", {
+			const response = await AxiosInstance.post("upload_collection", {
 				"title": title,
 				"date_of_publication": date_of_publication,
 				"authors": JSON.stringify(authors),
@@ -118,10 +119,16 @@ export default function AddDataset() {
 				"comment": comments,
 				"instance_representation": instance_representation,
 				"dataset_file": zipped_file,
-			})
+			}, {
+				headers: {
+					"content-type": "multipart/form-data",
+				}
+				}
+				)
 			if (response.status === 201) {
 				setModalMessage("Collection Published Successfully!");
 			} else {
+				console.log(response);
 				setModalMessage("Failed to publish collection. Please try again.");
 			}
 		}catch (error) {

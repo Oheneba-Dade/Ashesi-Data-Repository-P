@@ -3,7 +3,7 @@ GET https://adrp-test-api-pq5km.ondigitalocean.app/adrp/get_otp?email=sblank.bla
 
 
 ### GET OTP for a user
-GET https://adrp-test-api-pq5km.ondigitalocean.app/adrp/get_otp?email=samuel.blankson@ashesi.edu
+GET https://adrp-test-api-pq5km.ondigitalocean.app/adrp/get_otp?email=samuel.blankson@ashesi.edu.gh
 
 
 ### Login
@@ -11,8 +11,8 @@ POST http://localhost:8000/adrp/login
 Content-Type: application/json
 
 {
-  "email":"sblank.blankson@gmail.com",
-  "otp":"TDOU56"
+  "email":"samuel.blankson@ashesi.edu.gh",
+  "otp":"YWLTB5"
 }
 
 ### Tells you the user the token belongs to (TEST Purposes)

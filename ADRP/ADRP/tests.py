@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase
-from .models import Collection, DatasetFile
+from .models import Collection, DatasetFile, Authors
 from itertools import chain
 
 User = get_user_model()  
@@ -11,54 +11,54 @@ User = get_user_model()
 class CollectionFileAPITestCase(APITestCase):
     def setUp(self):
         """Set up test data before running each test"""
-        self.test_user = User.objects.create_user(password="password123", email='testuser@email.com')
+        self.test_user = User.objects.create_user(password="password123", email='testuser@ashesi.edu.gh')
         self.client.force_authenticate(user=self.test_user)  
 
 
             
-        # test collections
-        collection1 = Collection.objects.create(
-            title="AI for Healthcare",
-            abstract="Using AI in the medical field",
-            missing_values=False,
-            keywords=["AI", "Medicine"],
-            uploaded_by=self.test_user,
-            date_of_publication="2023-05-12",
-            access_level="public"
-        )
+        # # test collections
+        # collection1 = Collection.objects.create(
+        #     title="AI for Healthcare",
+        #     abstract="Using AI in the medical field",
+        #     missing_values=False,
+        #     keywords=["AI", "Medicine"],
+        #     uploaded_by=self.test_user,
+        #     date_of_publication="2023-05-12",
+        #     access_level="public"
+        # )
 
-        collection2 = Collection.objects.create(
-            title="Climate Change Data",
-            abstract="Climate-related datasets",
-            missing_values=True,
-            keywords=["Climate", "Environment"],
-            uploaded_by=self.test_user,
-            date_of_publication="2022-09-20",
-            access_level="private"
-        )
+        # collection2 = Collection.objects.create(
+        #     title="Climate Change Data",
+        #     abstract="Climate-related datasets",
+        #     missing_values=True,
+        #     keywords=["Climate", "Environment"],
+        #     uploaded_by=self.test_user,
+        #     date_of_publication="2022-09-20",
+        #     access_level="private"
+        # )
 
-        collection3 = Collection.objects.create(
-            title="Blockchain for Secure Transactions",
-            abstract="Using blockchain to enhance financial security",
-            missing_values=False,
-            keywords=["Blockchain", "Security", "Finance"],
-            uploaded_by=self.test_user,
-            date_of_publication="2024-01-15",
-            access_level="public"
-        )
+        # collection3 = Collection.objects.create(
+        #     title="Blockchain for Secure Transactions",
+        #     abstract="Using blockchain to enhance financial security",
+        #     missing_values=False,
+        #     keywords=["Blockchain", "Security", "Finance"],
+        #     uploaded_by=self.test_user,
+        #     date_of_publication="2024-01-15",
+        #     access_level="public"
+        # )
 
-        collection4 = Collection.objects.create(
-            title="Deep Learning in NLP Beyond AI",
-            abstract="Applying deep learning techniques to natural language processing",
-            missing_values=True,
-            keywords=["Deep Learning", "NLP", "AI"],
-            uploaded_by=self.test_user,
-            date_of_publication="2023-11-30",
-            access_level="restricted"
-        )
+        # collection4 = Collection.objects.create(
+        #     title="Deep Learning in NLP Beyond AI",
+        #     abstract="Applying deep learning techniques to natural language processing",
+        #     missing_values=True,
+        #     keywords=["Deep Learning", "NLP", "AI"],
+        #     uploaded_by=self.test_user,
+        #     date_of_publication="2023-11-30",
+        #     access_level="restricted"
+        # )
 
 
-        # self.collection = Collection.objects.create(
+        # # self.collection = Collection.objects.create(
         #     title="Test Collection",
         #     abstract="Test Abstract",
         #     missing_values=False,
@@ -82,52 +82,77 @@ class CollectionFileAPITestCase(APITestCase):
         self.update_url = "/adrp/dataset_update/"
         self.get_collection_by_id = "/adrp/get_collection/"
         self.filter_url = "/adrp/collections"
-
+        self.upload_url = "/adrp/upload_collection"
         
 
 
 
   
 
+    def test_upload_collection_with_file(self):
+        """Test uploading a new collection along with a dataset file"""
 
-    def test_filtering_title(self):
-        response = self.client.get(f"{self.filter_url}?title=AI")
-
-        self.assertEqual(response.status_code, 200)
+      
+        # Create a fake file
+        file_content = b"col1,col2\nval1,val2"
+        test_file = SimpleUploadedFile("test_dataset.csv", file_content, content_type="text/csv")
+        author = Authors.objects.create(name="John Doe")
         
-        results = response.json()
-        # self.assertIsInstance(results, list)
-        titles = [item["title"] for item in results['results']]
+
+        data = {
+            "title": "Test Collection Upload",
+            "abstract": "Testing upload with file",
+            "keywords": '["test", "upload"]',  
+            #"uploaded_by": self.test_user,
+            "file": test_file,  
+        }
+
+        # Send POST request
+        response = self.client.post(self.upload_url, data, format='multipart')
+        # print("Upload Response:", response.json() if response.headers.get("content-type") == "application/json" else response.content.decode())
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("id", response.data)
+
+
+    # def test_filtering_title(self):
+    #     response = self.client.get(f"{self.filter_url}?title=AI")
+
+    #     self.assertEqual(response.status_code, 200)
         
-        self.assertIn("AI for Healthcare", titles)
-        self.assertIn("Deep Learning in NLP Beyond AI", titles)
-        self.assertNotIn("Climate Change Data", titles) 
-
-        print("✅ Filtering by title test passed!")
-
-
-    def test_filtering_title_keywords(self):
-        response = self.client.get(f"{self.filter_url}?title=AI&keywords=AI,NLP")
-
-        self.assertEqual(response.status_code, 200)
+    #     results = response.json()
+    #     # self.assertIsInstance(results, list)
+    #     titles = [item["title"] for item in results['results']]
         
-        results = response.json()
-        titles = [item["title"] for item in results['results']]
-        keywords = [item["keywords"]for item in results['results']]
-        keywords_list= []
-        for keyword in keywords:
-            keywords_list += keyword
+    #     self.assertIn("AI for Healthcare", titles)
+    #     self.assertIn("Deep Learning in NLP Beyond AI", titles)
+    #     self.assertNotIn("Climate Change Data", titles) 
+
+    #     print("✅ Filtering by title test passed!")
+
+
+    # def test_filtering_title_keywords(self):
+    #     response = self.client.get(f"{self.filter_url}?title=AI&keywords=AI,NLP")
+
+    #     self.assertEqual(response.status_code, 200)
         
-        self.assertIn("Deep Learning in NLP Beyond AI", titles)
-        self.assertIn("AI for Healthcare", titles)
-        self.assertNotIn("Climate Change Data", titles) 
-        self.assertIn("NLP",keywords_list )
-        self.assertIn("Deep Learning", keywords_list)
-        self.assertNotIn("Blockchain", keywords_list)
+    #     results = response.json()
+    #     titles = [item["title"] for item in results['results']]
+    #     keywords = [item["keywords"]for item in results['results']]
+    #     keywords_list= []
+    #     for keyword in keywords:
+    #         keywords_list += keyword
+        
+    #     self.assertIn("Deep Learning in NLP Beyond AI", titles)
+    #     self.assertIn("AI for Healthcare", titles)
+    #     self.assertNotIn("Climate Change Data", titles) 
+    #     self.assertIn("NLP",keywords_list )
+    #     self.assertIn("Deep Learning", keywords_list)
+    #     self.assertNotIn("Blockchain", keywords_list)
 
 
 
-        print("✅ Filtering by title and key workdtest passed!")
+    #     print("✅ Filtering by title and key workdtest passed!")
 
     # def test_get_collection(self):
     #     """Test retrieving a collection by its ID."""

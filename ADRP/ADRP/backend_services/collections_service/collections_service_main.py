@@ -5,7 +5,8 @@ from rest_framework.response import Response
 
 from .collections_service_repository import *
 from ...serializers import CollectionSerializer
-
+from ..dataset_service.dataset_service_main import DatasetService
+from django.db import transaction
 
 class CollectionsService:
     """Service for managing collections on the ADRP"""
@@ -23,6 +24,47 @@ class CollectionsService:
             return serializer.data.get('id')
 
         raise ValidationError(serializer.errors)
+    
+
+    @staticmethod
+    def upload_collection(request_obj: Request):
+        """ uploads collection then dataset if one fails delete prevent any from entring database"""
+        # print('here')
+        dataset_fileobj = request_obj.data.get("dataset_file")
+        if not dataset_fileobj:
+            # print('here 2')
+            return {"error": "No file uploaded.", 'status':400}
+        # print('here 3')
+        serializer = CollectionSerializer(data=request_obj.data, context={'request': request_obj})
+        if serializer.is_valid():
+            # print("valid obj")
+            try:
+               with transaction.atomic():
+                    try:
+                        new_collection = serializer.save()
+                    except Exception as inner:
+                        # print('error saving', inner)
+                        raise
+
+                    save_authors(request_obj, new_collection)
+
+                    collection_id = new_collection.id
+                    result = DatasetService.handle_dataset_upload(collection_id, dataset_fileobj)
+                    # print('data set result', result)
+
+                    if result.get("status") != 201:
+                        raise Exception("Dataset upload failed")
+
+                    return {"message": "Collection and dataset uploaded successfully.",
+                            "collection": CollectionSerializer(new_collection, context={'request': request_obj}).data,
+                            "status":201}
+
+
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     @staticmethod
     def delete_collection(request_obj: Request):
@@ -51,12 +93,17 @@ class CollectionsService:
 
     @staticmethod
     def get_collection(request_obj: Request):
-        # TODO lock this down so that only admins can request restricted collections
-        collection_id = request_obj.query_params.get('collection_id')
+        """Gets a collection by the ID if user has sufficient permissions"""
 
+        collection_id = request_obj.query_params.get('collection_id')
         collection_data = get_collection_by_id(collection_id)
 
-        # increment views
+        if request_obj.user.role == 'admin':
+            increment_collection_views(collection_data)
+        else:
+            if collection_data.approval_status != 'approved':
+                return
+
         increment_collection_views(collection_data)
 
         # Return only approved columns
@@ -68,13 +115,16 @@ class CollectionsService:
     def change_collection_status(request_obj: Request):
         """ Change the status of a collection"""
 
-        collection = get_collection_by_id(request_obj.data.get('id'))
+        try:
+            collection = get_collection_by_id(request_obj.data.get('id'))
 
-        serializer = CollectionSerializer(instance=collection, data=request_obj.data, partial=True)
+            serializer = CollectionSerializer(instance=collection, data=request_obj.data, partial=True)
 
-        if serializer.is_valid():
-            collection.approval_status = serializer.validated_data['approval_status']
-            collection.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            if serializer.is_valid():
+                collection.approval_status = serializer.validated_data['approval_status']
+                collection.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
