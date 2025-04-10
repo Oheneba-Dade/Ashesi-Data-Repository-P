@@ -5,12 +5,16 @@ import HeroBlock from "@/components/HeroBlock";
 import CollectionsContainer from "@/components/CollectionsContainer";
 import { BASE_URL } from "@/utils/constants";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
 
 	let initialCollections = [];
 
 	try {
-		const response = await fetch(`${BASE_URL}/get_all_collections?page=1`);
+		const response = await fetch(`${BASE_URL}/get_all_collections`, {
+			cache: "no-store",
+		});
 		if (!response.ok) {
 			throw new Error(`HTTP error! Status: ${response.status}`);
 		}
