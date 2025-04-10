@@ -311,7 +311,7 @@ export default function Filter({ onFilterResults, onResetFilter, setLoading }) {
 		const queryParams = {
 			title: collectionName,
 			keywords: keywords,
-			author: author,
+			authors: author,
 			published_after: fromYear,
 			published_before: toYear,
 		};

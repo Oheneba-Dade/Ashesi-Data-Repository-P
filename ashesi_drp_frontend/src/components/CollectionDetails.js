@@ -14,11 +14,12 @@ import { BASE_URL } from "@/utils/constants";
 export default function CollectionsDetails({ initialCollection}) {
     const [collection, setCollections] = useState(initialCollection);
     const [isLoading, setIsLoading] = useState(false);
-    const [showAbstract, setShowAbstract] = useState(false);
+    const [showAbstract, setShowAbstract] = useState(true);
     const [showInfo, setShowInfo] = useState(false);
     const [showIntro, setShowIntro] = useState(false);
-    const [showFiles, setShowFiles] = useState(false);
+    const [showFiles, setShowFiles] = useState(true);
     const[jwt, setJWT] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
     // const [showReview, setShowReview] = useState(false);
     
     // checking if user is admin
@@ -51,19 +52,22 @@ export default function CollectionsDetails({ initialCollection}) {
           const data = await response.json();
       
           if (response.ok) {
-            alert(`Collection ${status} successfully!`);
+            setStatusMessage(`Collection ${status} successfully!`);
             // Optionally, refresh the data or update state
           } else {
-            alert(`Error: ${data.message}`);
+            console.log(`Error: ${data.message}`);
+            setStatusMessage("An error occurred. Please try again.")
           }
         } catch (error) {
           console.error("Error updating status:", error);
-          alert("An error occurred. Please try again.");
+          setStatusMessage("An error occurred. Please try again.")
+          setTimeout(() => setCopyMessage(""), 3000);
         } finally {
-          setIsLoading(false);
-          
-          window.location.href = `/collections/${collectionId}`;
-      }
+          setTimeout(() => {
+            setIsLoading(false);
+            window.location.href = `/collections/${collectionId}`;
+          },2000);    
+        }
     };
     
     return(
@@ -145,31 +149,7 @@ export default function CollectionsDetails({ initialCollection}) {
 
                     <hr className="mt-5 mb-8" />
                 </div>
-                
-                {/*  INSTANCE REPRESENTATION */}
-                <div>
-                    <hr className="my-3" />
-
-                    <div className="cursor-pointer" onClick={() => setShowIntro(!showIntro)}>
-                        <h2 className="text-ashesi-red font-semibold justify-between flex items-center">
-                            INSTANCE REPRESENTATION
-                            <AiOutlineDown
-                                className={`mx-2 transform transition-transform duration-500 ease-in-out ${showIntro ? 'rotate-180' : 'rotate-0'}`} />
-                        </h2>
-                    </div>
-                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showIntro ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>
-                        <p className="mt-4 mb-1"><strong> What do the instances in this dataset represent?</strong></p>
-                        <p className="">
-                            {collection.instance_representation}
-                        </p>
-
-                        {/* <p className="mt-4 mb-1"><strong>  Has Missing Values?</strong></p>
-                        { collection.missing_values ? <p className="">Yes</p> : <p className="">No</p>} */}               
-                    </div>
-
-                    <hr className="mt-5 mb-8" />
-                </div>
-                          
+                        
                 {/*  FILES */}
                 <div>
                     <hr className="my-3" />
@@ -188,6 +168,28 @@ export default function CollectionsDetails({ initialCollection}) {
                       <Files collection_id={collection.id}/>
                     </div>
                     
+                    <hr className="mt-5 mb-8" />
+                </div>
+                
+                {/*  INSTANCE REPRESENTATION */}
+                <div>
+                    <hr className="my-3" />
+
+                    <div className="cursor-pointer" onClick={() => setShowIntro(!showIntro)}>
+                        <h2 className="text-ashesi-red font-semibold justify-between flex items-center">
+                            DATASET DESCRIPTION
+                            <AiOutlineDown
+                                className={`mx-2 transform transition-transform duration-500 ease-in-out ${showIntro ? 'rotate-180' : 'rotate-0'}`} />
+                        </h2>
+                    </div>
+                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showIntro ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>
+                        <p className="mt-4 mb-1"><strong> What does each record in the dataset represent?</strong></p>
+                        <p className="">
+                            {collection.instance_representation}
+                        </p>
+             
+                    </div>
+
                     <hr className="mt-5 mb-8" />
                 </div>
                 
@@ -213,9 +215,22 @@ export default function CollectionsDetails({ initialCollection}) {
                     isAdmin && (
                         <div className="my-16">
             				    <div className="mt-2 flex justify-center gap-4">  
-                        { isLoading? (
-                            <div className="flex justify-center items-center h-40">
-                                <div className="w-10 h-10 border-4 border-ashesi-red border-t-transparent rounded-full animate-spin"></div>
+                        { isLoading? (                          
+                            <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">	  
+                              <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+                                <div className="flex justify-center items-center h-40">
+                                    <div className="w-20 h-20 border-4 border-ashesi-red border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                  
+                                {statusMessage ? 
+                                 
+                                (
+                                    <div className="text-green-700 font-bold text-center">{statusMessage}</div>
+                                     ) : (
+                                    <div className="text-gray-700 font-bold text-center">Status is Updating ....</div>
+                                )
+                                }
+                              </div>
                             </div>
                             ) : (
                                 <>

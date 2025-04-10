@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,18 +8,38 @@ import { useRouter } from 'next/navigation';
 import { FaChevronDown } from "react-icons/fa";
 import SearchBar from "@/components/SearchBar";
 
+
 export default function Navbar() {
 	const pathname = usePathname();
 	const [logIn, setLogIn] = useState(null);
 	const [userEmail, setUserEmail] = useState("");
 	const [user, setUser] = useState("");
 	const [menuOpen, setMenuOpen] = useState(false);
+	const dropdownRef = useRef();
 
 	useEffect(() => {
 		setUserEmail(localStorage.getItem("email"))
 		setLogIn(localStorage.getItem("jwt"));
-		setUser(localStorage.getItem("user"));		
+		setUser(localStorage.getItem("user"));	
+	
 	}, []);
+	
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+		  if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+			setMenuOpen(false);
+		  }
+		};
+	
+		if (menuOpen) {
+		  document.addEventListener("mousedown", handleClickOutside);
+		}
+	
+		return () => {
+		  document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [menuOpen]);
+	
 	
 	// Function to determine active styles
 	const getLinkClass = (href) =>
@@ -78,7 +98,7 @@ export default function Navbar() {
 					</Link>
 					{/* Avatar & Dropdown */}
 					{logIn ? (
-				        <div className="relative">
+				        <div className="relative" ref={dropdownRef}>
 				          <button
 				            onClick={() => setMenuOpen(!menuOpen)}
 				            className="flex items-center gap-2 p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition"
@@ -104,13 +124,14 @@ export default function Navbar() {
 
 				              <p className="text-gray-700 text-sm px-2">{userEmail? userEmail.split("@")[0] : "No Email"}</p>
 				              <p className="text-gray-700 text-sm px-2">{user || "No User"}</p>
-
-				              <button
-							      onClick={() => router.push("/admin_collections")}
-							      className="w-full text-left px-2 py-2 text-sm text-blue-600 hover:bg-gray-100 rounded-md"
-							    >
-							      Admin Page
-							  </button>
+							  { user == "admin" &&
+					              (<button
+								      onClick={() => router.push("/admin_collections")}
+								      className="w-full text-left px-2 py-2 text-sm text-blue-600 hover:bg-gray-100 rounded-md"
+								    >
+								      Admin Page
+								  </button>)
+							   }  
 				              <button
 				                onClick={handleLogout}
 				                className="w-full text-left px-2 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-md"

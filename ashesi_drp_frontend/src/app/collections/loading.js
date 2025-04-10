@@ -59,7 +59,7 @@ export default function Card() {
 			<div className="md:col-span-4 max-w-3xl">
 
 				{/* first */}
-				<div className="py-10 px-4">
+				<div className="py-4 px-4">
 				  <Skeleton width={300} height={20} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <Skeleton height={40} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <div className="mt-4 flex flex-wrap justify-between text-sm text-ashesi-gray">
@@ -74,7 +74,7 @@ export default function Card() {
 				</div>
 
 				{/* Second */}
-				<div className="py-10 px-4">
+				<div className="py-4 px-4">
 				  <Skeleton width={300} height={20} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <Skeleton height={40} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <div className="mt-4 flex flex-wrap justify-between text-sm text-ashesi-gray">
@@ -89,7 +89,7 @@ export default function Card() {
 				</div>
 
 				{/* Third */}
-				<div className="py-10 px-4">
+				<div className="py-4 px-4">
 				  <Skeleton width={300} height={20} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <Skeleton height={40} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <div className="mt-4 flex flex-wrap justify-between text-sm text-ashesi-gray">
@@ -104,7 +104,7 @@ export default function Card() {
 				</div>
 				
 				{/* Fourth */}
-				<div className="py-10 px-4">
+				<div className="py-4 px-4">
 				  <Skeleton width={300} height={20} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <Skeleton height={40} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <div className="mt-4 flex flex-wrap justify-between text-sm text-ashesi-gray">
@@ -119,7 +119,7 @@ export default function Card() {
 				</div>
 				
 				{/* Fifth */}
-				<div className="py-10 px-4">
+				<div className="py-4 px-4">
 				  <Skeleton width={300} height={20} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <Skeleton height={40} baseColor="#dce3e8" highlightColor="#f0f4f8"/>
 				  <div className="mt-4 flex flex-wrap justify-between text-sm text-ashesi-gray">

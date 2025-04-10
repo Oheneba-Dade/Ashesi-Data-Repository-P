@@ -42,7 +42,7 @@ const LoadingOverlay = ({ show }) => (
 			show ? "opacity-100 visible" : "opacity-0 invisible"
 		}`}
 	>
-		<div className="bg-white p-6 rounded-md shadow-lg">
+		<div className="bg-white p-12 rounded-md shadow-lg">
 			<p className="text-lg font-semibold text-ashesi-red">
 				Publishing Collection...
 			</p>
@@ -75,7 +75,7 @@ export default function AddDataset() {
 	const [showModal, setShowModal] = useState(false);
 	const [modalMessage, setModalMessage] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-
+	const [isSuccess, setIsSuccess] = useState(false);
 
 
 	useEffect(() => {
@@ -88,6 +88,7 @@ export default function AddDataset() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		setIsLoading(true);
 		const title = document.getElementById("title").value;
 		const date_of_publication = document.getElementById("date_of_publication").value;
 		const doi_link = document.getElementById("doi").value;
@@ -127,9 +128,11 @@ export default function AddDataset() {
 				)
 			if (response.status === 201) {
 				setModalMessage("Collection Published Successfully!");
+				setIsSuccess(true);
 			} else {
 				console.log(response);
 				setModalMessage("Failed to publish collection. Please try again.");
+				setIsSuccess(false);
 			}
 		}catch (error) {
 			setModalMessage("Error occurred. Check your connection and try again.");
@@ -144,7 +147,16 @@ export default function AddDataset() {
 	return (
 	<>
 		<LoadingOverlay show={isLoading} />
-		<Modal show={showModal} message={modalMessage} onClose={() => setShowModal(false)} />
+		<Modal
+			show={showModal}
+			message={modalMessage}
+			onClose={() => {
+				setShowModal(false);
+				if (isSuccess) {
+					router.push("/collections");
+				}
+			}}
+		/>
 		<form className="container mx-auto mt-32 max-w-4xl px-4">
 			<section className="my-16">
 				<h2 className="text-3xl font-semibold text-center text-ashesi-red">

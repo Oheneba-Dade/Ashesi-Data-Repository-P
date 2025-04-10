@@ -4,10 +4,11 @@ import { MdOutlineFileDownload } from "react-icons/md";
 import { AiOutlineFile } from "react-icons/ai";
 import CustomButton from "@/components/CustomButton";
 import { BASE_URL } from "@/utils/constants";
+import {FiDownload} from 'react-icons/fi';
 import Image from "next/image";
 
 
-const FileTable = ({collection_id}) => {
+const FileTable = ({collection_id, showRoles=true, textContent="Want to Download Files?"}) => {
   
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -70,7 +71,7 @@ const FileTable = ({collection_id}) => {
   
   // Show loading
   if (loading) return (
-      <div className="flex justify-center items-center h-32">
+      <div className="flex justify-center items-center h-8">
         <Image src="/animation/loading.gif" alt="Loading..." width={100} height={100} />
       </div>
   );
@@ -97,20 +98,23 @@ const FileTable = ({collection_id}) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-6">
+    <div className="max-w-3xl mx-auto mt-1">
       {/* Top Section */}
       <div className="flex justify-between items-start">
         <p className="text-gray-700 max-w-lg">
           
         </p>
         <CustomButton
-            text="Want to Download Files?"
+            text={textContent}
             bgColor = "bg-white"
             textColor = "text-ashesi-red"
             onClick={() => setShowPopup(true)}
-            width = "w-auto"
+            width = {textContent=="Download"? "w-full" : "w-auto"}
             height = "h-10"
-            className="text-sm !font-medium border border-ashesi-red px-4 py-2 px-4 hover:bg-ashesi-red hover:text-white"        
+            icon={textContent=="Download"?FiDownload:""}
+            iconPosition={textContent=="Download"?"right":""}
+            iconClassName={textContent=="Download"?"text-md":""}
+            className={textContent=="Download" ? "flex items-center justify-between text-sm !font-medium border border-ashesi-red py-2 px-4 hover:bg-ashesi-red hover:text-white":"text-sm !font-medium border border-ashesi-red px-4 py-2 px-4 hover:bg-ashesi-red hover:text-white"}       
         />
         
         {/* Popup Modal */}
@@ -185,29 +189,31 @@ const FileTable = ({collection_id}) => {
       </div>
       {/* <pre className="bg-gray-100 p-4 rounded-md">{JSON.stringify(file, null, 2)}</pre> */}
       {/* Table */}
-      <div className="mt-6 overflow-x-auto">
-        <table className="w-full border-collapse">
-         
-          <thead>
-            <tr className="border-b">
-              <th className="text-left font-semibold py-2">Filename</th>
-              <th className="text-left font-semibold py-2">Uploaded On</th>
-              <th className="text-left font-semibold py-2">Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b">
-              <td className="py-3 flex items-center gap-2">
-                <AiOutlineFile className="text-xl text-gray-500" />
-                {file[0].file_name}
-              </td>
-          
-              <td className="text-gray-600">{file[0].uploaded_at.slice(0, 10)}</td>
-              <td className="text-gray-600">{file[0].file_type}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      {showRoles && (
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full border-collapse">
+           
+            <thead>
+              <tr className="border-b">
+                <th className="text-left font-semibold py-2">Filename</th>
+                <th className="text-left font-semibold py-2">Uploaded On</th>
+                <th className="text-left font-semibold py-2">Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b">
+                <td className="py-3 flex items-center gap-2">
+                  <AiOutlineFile className="text-xl text-gray-500" />
+                  {file[0].file_name}
+                </td>
+            
+                <td className="text-gray-600">{file[0].uploaded_at.slice(0, 10)}</td>
+                <td className="text-gray-600">{file[0].file_type}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
