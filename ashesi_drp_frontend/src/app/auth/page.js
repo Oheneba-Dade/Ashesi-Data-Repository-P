@@ -1,11 +1,12 @@
 "use client";
 import "../globals.css";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from 'next/navigation'
 import CustomButton from "@/components/CustomButton";
 import CountdownTimer from "@/components/Countdown";
 import Image from "next/image";
 import AxiosInstance from "@/auth_lib/axios";
+
 
 
 export default function Page() {
@@ -50,6 +51,36 @@ export default function Page() {
         }    
     }
 
+    const inputRefs = useRef([]);
+    const handleOtpPaste = async (e) => {
+        try {
+            const text = await navigator.clipboard.readText();
+            const val = text.toString()
+            let OtpVal = val.split("")
+            if(val.length > 6){
+                OtpVal = val.substring(0,6).split("")
+            } else if (val.length < 6){
+                OtpVal = val.split('').concat(Array(6).fill("")).slice(0, 6);
+            }
+            setOtp(OtpVal)
+
+
+            if (val.length == 6) {
+                inputRefs.current[5]?.focus();
+            } else {
+                const firstEmpty = OtpVal.findIndex(char => char === "");
+                if (firstEmpty !== -1) {
+                    inputRefs.current[firstEmpty]?.focus();
+                }
+            }
+
+          } catch (err) {
+            console.error("Failed to read clipboard contents:", err);
+            return null;
+        }
+
+    }
+
     const handleOtpBackspace = (e, index) => {
         if (e.key === "Backspace") {
             if (otp[index] !== "") {
@@ -61,6 +92,7 @@ export default function Page() {
             }
         }
     };
+
 
     const GETOtp = async () => {
         try {
@@ -88,10 +120,6 @@ export default function Page() {
     }
 
     const handleBack = () => {
-        // 1 is the username step and 2 is the password step
-        // if (step === 1){
-        //     setStep(2);
-        // }else 
         if (step === 2){
             setStep(1);
             setOtp(new Array(6).fill(""));
@@ -181,9 +209,7 @@ export default function Page() {
                         </div>
 
                         <div className="flex flex-row justify-end p-4 mr-8 "> 
-                            {/* */}
                             <div className="mr-4">
-                                {/*  */}
                                 <CustomButton
                                     text="Back"
                                     bgColor="bg-white"
@@ -205,14 +231,10 @@ export default function Page() {
                                 />
                             </div>
                         </div>
-
                     </div>   
                 ) : (
                 <div>
                     <div className="flex flex-row">
-                        {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                        </svg> */}
                         <div>
                             <div className="mr-4">
                                 <CustomButton
@@ -251,6 +273,7 @@ export default function Page() {
                                     return <input
                                     value = {data}
                                     id={`otp-${i}`}
+                                    ref={(el) => inputRefs.current[i] = el}
                                     name="otp"
                                     maxLength={1}
                                     key = {i}
@@ -261,9 +284,10 @@ export default function Page() {
                                             handleOtpBackspace(e, i)
                                         }
                                         if(e.key === "Enter"){
-                                            console.log(otp.join())
+                                            handleLogin()
                                         }
-                                    }}      
+                                    }} 
+                                    onPaste={(e) => {handleOtpPaste(e)}}     
                                 />
                                 })
                             }
@@ -282,20 +306,9 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="flex flex-row justify-center p-4 mt-6 mr-4">
-                        {/* <div className="mr-4">
-                            <CustomButton
-                                text="Back"
-                                bgColor="bg-white"
-                                textColor="text-black"
-                                width="w-50"
-                                height="h-10"
-                                onClick={handleBack}
-                            />
-                        </div> */}
                         <div className="">
                             <CustomButton
                                 text="Login"
-                                // bgColor="bg-white"
                                 textColor="text-white"
                                 width="w-60"
                                 height="h-10"
@@ -306,7 +319,7 @@ export default function Page() {
                         </div>
                     </div> 
                 </div>
-                )}
+            )}
             </div>
         </div>
     )
