@@ -63,6 +63,7 @@ export default function DataPolicy() {
 					textColor="text-ashesi-red"
 					border="border border-ashesi-red"
 					width="1/2"
+					href="/auth"
 				/>
 			</div>
 		</div>

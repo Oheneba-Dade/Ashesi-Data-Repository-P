@@ -10,7 +10,7 @@ from .accounts_service_repository import *
 from ..statistics_service.statistics_service_repository import *
 from .custom_jwtserializer import OTPTokenObtainPairSerializer
 from ..email_service.email_service_main import EmailService
-
+from ...settings import OTP_LIFETIME, OTP_LENGTH
 
 class AccountsService:
 
@@ -19,7 +19,7 @@ class AccountsService:
         return user_exists_by_email(request_obj.query_params.get("email"))
 
     @staticmethod
-    def generate_otp(otp_length=6, lifetime=5) -> tuple[str, int]:
+    def generate_otp(otp_length=OTP_LENGTH, lifetime=OTP_LIFETIME) -> tuple[str, int]:
         """Generates an OTP for a user.
 
         :param request: Request object with request parameters

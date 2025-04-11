@@ -9,6 +9,9 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy application
 COPY . .
 
+# At the end of Dockerfile, after COPY . .
+RUN python manage.py collectstatic --noinput
+
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 

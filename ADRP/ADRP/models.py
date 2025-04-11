@@ -20,16 +20,22 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('The Email field has not been set')
 
+        # Set internal or external role based on email
         if check_email_domain(email):
             extra_fields.setdefault('role', 'internal')
         else:
             extra_fields.setdefault('role', 'external')
 
-        # Set other account details
+        # Set other fields
         email = self.normalize_email(email).lower()
         user = self.model(email=email, **extra_fields)
-        user.set_unusable_password()
         extra_fields.setdefault('is_active', True)
+
+        # Special logic for superusers
+        if extra_fields.get('is_superuser') is False:
+            user.set_unusable_password()
+        else:
+            user.set_password(password)
 
         user.save()
 
@@ -45,6 +51,7 @@ class CustomUserManager(BaseUserManager):
         # Set new defaults
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('role', 'admin')
+        extra_fields.setdefault('is_staff', True)
 
         # # Check that appropriate permissions are set
         # if extra_fields.get('is_superuser') is not True:
@@ -83,6 +90,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='external')
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     login_attempts = models.IntegerField(default=0)

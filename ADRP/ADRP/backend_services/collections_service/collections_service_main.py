@@ -94,23 +94,20 @@ class CollectionsService:
     @staticmethod
     def get_collection(request_obj: Request):
         """Gets a collection by the ID if user has sufficient permissions"""
+        #TODO this can be improved
 
         collection_id = request_obj.query_params.get('collection_id')
         collection_data = get_collection_by_id(collection_id)
-        #TODO Fix this
-        try:
-            if request_obj.user.role == 'admin':
-                increment_collection_views(collection_data)
-            else:
-                if collection_data.approval_status != 'approved':
-                    return
-        except Exception as e:
-            pass
+        serialized_data = CollectionSerializer(instance=collection_data)
+
+        if request_obj.user.is_authenticated and request_obj.user.role == 'admin':
+            increment_collection_views(collection_data)
+            return serialized_data.data
+        else:
+            if collection_data.approval_status != 'approved':
+                return
 
         increment_collection_views(collection_data)
-
-        # Return only approved columns
-        serialized_data = CollectionSerializer(instance=collection_data)
 
         return serialized_data.data
 

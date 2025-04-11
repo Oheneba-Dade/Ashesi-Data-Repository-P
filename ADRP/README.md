@@ -31,6 +31,7 @@ ADRP/                                       # Project root
 │   │    ├── views/                         # API endpoint defintions
 │   │    ├── serializers.py                           # Serializers for relevant models
 │   │    ├── *.py                           # Other python files used by the Django framework
+│   ├── staticfiles/                        # Contains the static frontend files for DRF 
 │   ├── manage.py                           # Used to run the Django project and perform other related actions
 │   ├── docker-compose.yml
 │   ├── Dockerfile
@@ -52,14 +53,42 @@ To run the gunicorn server for the API you should:
 1. CD into the project root as shown in the structure above
 2. Create database migrations by typing the following in the terminal
 ```python manage.py makemigrations```
-3. Confirm database migrations with ```python mangage.py migrate```
-4. Finally, run the server with ```python manage.py runserver```
+3. Apply database migrations with ```python mangage.py migrate```
+4. Run ```python manage.py collectstatic``` to build the static files needed for Django related pages
+5. Finally, run the server with ```python manage.py runserver```
+
+
+### Modifying API Settings
+#### User related API Settings
+Some of the settings that govern the general behaviour of the API can be modified in the ```settings.py``` file located in the
+Django project folder (refer to the Project Structure section).
+
+Settings that you may actually want to change include:
+1. ```OTP_LIFETIME``` : The valid lifetime of a users OTP (in mins)
+2. ```OTP_LENGTH``` : The number of characters in the OTP (changing this would requre changes to the frontend)
+3. ```ACCESS_TOKEN_LIFETIME``` : The number of hours that an access token is live for.
+4. ```REFRESH_TOKEN_LIFETIME``` : The number of hours that the refrsh token is live for. (Currently not being used)
+
+#### Deployment config Settings
+There are also some configs related to API Services that you may want to change once you are ready to deploy the app.
+These include:
+1. Email config and credentials for the SMTP based email notification service
+2. Database config and cridentials
+3. AWS bucket credentials.
+
+All of these can be changed within the .env file
+
+
+### ToDo before deploying
+The following checklist should be followed before the API is made publicly available:
+https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 
 ### Current deployment config
 Currently, we use Docker for deployments. The relevant ```docker-compose.yml``` and ```Dockerfile``` have been provided.
 It is set to automatically restart the container in case of any fatal errors. Additionally, it is configured to run using 
 the WSGI server with 4 workers attached. To scale, the number of workers can be increased.
+
 
 
 

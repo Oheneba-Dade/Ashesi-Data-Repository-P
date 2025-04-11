@@ -11,14 +11,15 @@ class IsInternalAdmin(BasePermission):
 
 
 class IsInternalUser(BasePermission):
-    """ Permisison to ensure a user is an internal user"""
+    """Permission to ensure a user is an internal user or admin"""
     message = 'User must be an internal user'
 
     def has_permission(self, request, view):
-        if request.user and request.user.is_authenticated and request.user.role == 'internal':
-            return True
-        return False
-
+        return (
+            request.user and
+            request.user.is_authenticated and
+            request.user.role in {'internal', 'admin'}
+        )
 
 class ExternalUser(BasePermission):
     """ Permission check to ensure a user is an external user (not an ashesi based address)"""
