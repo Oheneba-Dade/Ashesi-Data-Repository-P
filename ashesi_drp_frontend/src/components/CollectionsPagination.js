@@ -25,7 +25,7 @@ export default function CollectionsPagination({
             </button>
 
             <div>
-                {currentPage} out of {numberOfPages}
+                Page {currentPage} of {numberOfPages}
             </div>
 
             <button
