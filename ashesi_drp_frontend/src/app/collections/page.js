@@ -33,7 +33,6 @@ export default async function Collections() {
 				<hr className="mb-8" />
 			</div>
 
-			{/* Remove the empty alignment div and let CollectionsContainer handle the layout */}
 			<CollectionsContainer initialCollections={initialCollections} />
 		</div>
 	);
