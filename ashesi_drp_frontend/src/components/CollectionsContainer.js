@@ -20,7 +20,6 @@ export default function CollectionsContainer({
 	const [currentPage, setCurrentPage] = useState(1);
 	const [numberCollections, setNumberCollections] = useState(0);
 
-
 	useEffect(() => {
 		fetch("/search-not-found-animation.json")
 			.then((response) => response.json())
@@ -34,11 +33,8 @@ export default function CollectionsContainer({
 		}
 	}, [initialCollections]);
 
-
-
 	const fetchPage = async (url) => {
 		if (!url) return;
-
 
 		setLoading(true);
 		try {
@@ -68,7 +64,6 @@ export default function CollectionsContainer({
 			setLoading(false);
 		}
 	};
-
 
 	const handleFilterResults = (filteredData) => {
 		// Check if the data has the expected structure
@@ -115,7 +110,7 @@ export default function CollectionsContainer({
 		<div className="mb-14 w-full px-4 md:px-8 lg:px-16">
 			<div className="flex flex-col md:flex-row md:gap-8 lg:gap-20">
 				{filterOn && (
-					<div className="w-full md:w-auto md:min-w-[320px] mb-8 md:mb-0">
+					<div className="w-full md:w-auto md:min-w-[320px] mb-8 md:mb-0 md:sticky md:top-0 md:self-start md:pt-8">
 						<Filter
 							onFilterResults={handleFilterResults}
 							onResetFilter={handleResetFilter}
@@ -167,7 +162,9 @@ export default function CollectionsContainer({
 											previousUrl={collections.previous}
 											onPageChange={fetchPage}
 											currentPage={currentPage}
-											numberCollections={numberCollections}
+											numberCollections={
+												numberCollections
+											}
 										/>
 									)}
 								</>
