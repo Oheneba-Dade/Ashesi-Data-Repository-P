@@ -1,6 +1,7 @@
 import json
 
-from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.exceptions import NotFound
+
 
 from ..custom_pagination import BasicPagination, AdminPagination
 from ...models import Collection, Authors, Statistics
@@ -15,7 +16,7 @@ def get_collection_by_id(collection_id):
     try:
         return Collection.objects.get(id=collection_id)
     except Collection.DoesNotExist:
-        raise ObjectDoesNotExist("Collection not found.")
+        raise NotFound("Collection not found.")
 
 
 def create_collection(user, collection):

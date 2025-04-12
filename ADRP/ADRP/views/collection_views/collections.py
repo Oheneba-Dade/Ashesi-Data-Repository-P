@@ -33,11 +33,11 @@ def get_all_collections(request: Request) -> HttpResponse:
 def get_collection(request: Request) -> Response:
     """Get a single collection based on the ID provided."""
 
-    try:
-        collections = CollectionsService.get_collection(request)
-        return Response(data=collections, status=status.HTTP_200_OK)
-    except ObjectDoesNotExist:
-        return Response({"message": "collection not found"}, status=status.HTTP_404_NOT_FOUND)
+    # try:
+    collections = CollectionsService.get_collection(request)
+    return Response(data=collections, status=status.HTTP_200_OK)
+    # except Exception as e:
+    #     return Response({"message": "collection not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])

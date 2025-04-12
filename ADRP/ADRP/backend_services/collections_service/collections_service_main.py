@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied, NotAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -20,6 +20,7 @@ class CollectionsService:
         if serializer.is_valid():
             new_collection = serializer.save()
             save_authors(request_obj, new_collection)
+            print(serializer.data.get('keywords'))
 
             return serializer.data.get('id')
 
@@ -97,7 +98,11 @@ class CollectionsService:
         #TODO this can be improved
 
         collection_id = request_obj.query_params.get('collection_id')
-        collection_data = get_collection_by_id(collection_id)
+        try:
+            collection_data = get_collection_by_id(collection_id)
+        except Exception as e:
+            raise e
+
         serialized_data = CollectionSerializer(instance=collection_data)
 
         if request_obj.user.is_authenticated and request_obj.user.role == 'admin':
@@ -105,7 +110,7 @@ class CollectionsService:
             return serialized_data.data
         else:
             if collection_data.approval_status != 'approved':
-                return
+                raise PermissionDenied("You do not have permission to view this collection.")
 
         increment_collection_views(collection_data)
 
