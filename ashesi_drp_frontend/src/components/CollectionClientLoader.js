@@ -13,29 +13,29 @@ export default function CollectionClientLoader({ collectionId }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const jwt = localStorage.getItem("jwt");
-
-            if (!jwt) {
-                console.error("No JWT found in localStorage.");
-                return;
-            }
+            // const jwt = localStorage.getItem("jwt");
+            //
+            // if (!jwt) {
+            //     console.error("No JWT found in localStorage.");
+            //     return;
+            // }
 
             try {
                 const collectionRes = await fetch(
                     `${BASE_URL}/get_collection/?collection_id=${collectionId}`,
                     {
-                        headers: {
-                            Authorization: `Bearer ${jwt}`,
-                        },
+                        // headers: {
+                        //     Authorization: `Bearer ${jwt}`,
+                        // },
                     }
                 );
 
                 const downloadRes = await fetch(
                     `${BASE_URL}/get_dataset/?collection_id=${collectionId}`,
                     {
-                        headers: {
-                            Authorization: `Bearer ${jwt}`,
-                        },
+                        // headers: {
+                        //     Authorization: `Bearer ${jwt}`,
+                        // },
                     }
                 );
 
