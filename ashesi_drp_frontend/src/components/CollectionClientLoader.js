@@ -138,11 +138,13 @@ export default function CollectionClientLoader({ collectionId }) {
                 <div className="md:col-span-3 space-y-4">
                     <div className="h-8 bg-gray-200 rounded animate-pulse w-2/3" />
                     <div className="h-6 bg-gray-200 rounded animate-pulse w-1/2" />
-                    <div className="h-40 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-64 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-64 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-64 bg-gray-200 rounded animate-pulse" />
                 </div>
                 <div className="space-y-4">
-                    <div className="h-6 bg-gray-200 rounded animate-pulse w-3/4" />
                     <div className="h-32 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-96 bg-gray-200 rounded animate-pulse" />
                 </div>
             </>
         );

@@ -13,6 +13,7 @@ import CustomButton from "@/components/CustomButton";
 import Link from "next/link";
 import { BASE_URL } from "@/utils/constants";
 import CollectionsDetails from "./CollectionDetails";
+import CollectionsPagination from "@/components/CollectionsPagination";
 
 export default function AdminCollections() {
 	const [jwt, setJWT] = useState("");
@@ -20,11 +21,20 @@ export default function AdminCollections() {
 	const [sortOpen, setSortOpen] = useState(false);
 	const [sortCriteria, setSortCriteria] = useState(null);
 	const [sortedCollections, setSortedCollections] = useState([]);
-	const [isLoading, setIsLoading] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [numberCollections, setNumberCollections] = useState(0);
+	const [isLoading, setIsLoading] = useState(false); //for status update
+	const [loading, setLoading] = useState(true); // for collections
 	const [showAbstract, setShowAbstract] = useState(false);
 	const [abstract, setAbstract] = useState("");
 	const [statusMessage, setStatusMessage] = useState("");
 	const downRef = useRef();
+	const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+	const [pendingAction, setPendingAction] = useState({
+		id: null,
+		status: null,
+		index: null,
+	});
 
 	useEffect(() => {
 		const jwt = localStorage.getItem("jwt");
@@ -35,7 +45,7 @@ export default function AdminCollections() {
 			window.location.href = "/auth"; // Redirect to login if no token
 		}
 
-		getCollections(jwt);
+		getCollections(null);
 	}, []);
 
 	useEffect(() => {
@@ -62,11 +72,16 @@ export default function AdminCollections() {
 	// };
 
 	// get collections
-	const getCollections = async (jwt) => {
+	const getCollections = async (url) => {
+		setLoading(true); //to run the loading animation
+
+		const jwt = localStorage.getItem("jwt");
+
 		try {
-			// get pending collections
+			// get all collections
 			const response = await fetch(
-				`${BASE_URL}/get_all_collections/?status=pending`,
+				url ||
+					`${BASE_URL}/get_all_collections/?page=${currentPage}&status=all`,
 				{
 					method: "GET",
 					cache: "no-store",
@@ -84,55 +99,24 @@ export default function AdminCollections() {
 
 			const data = await response.json();
 
-			// get rejected collections
-			const response1 = await fetch(
-				`${BASE_URL}/get_all_collections/?status=rejected`,
-				{
-					method: "GET",
-					cache: "no-store",
-					next: { revalidate: 0 },
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: "Bearer " + jwt,
-					},
-				}
-			);
-
-			if (!response1.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
+			if (data && data.results) {
+				setSortedCollections(data);
+				setCurrentPage(data.current_page);
+				setNumberCollections(data.count);
+			} else {
+				// Handle the case when the data doesn't have results
+				setSortedCollections({
+					results: [],
+					next: null,
+					previous: null,
+					count: 0,
+				});
+				setNumberCollections(0);
 			}
-
-			const data1 = await response1.json();
-
-			// get aproved collections
-			const response2 = await fetch(
-				`${BASE_URL}/get_all_collections/?status=approved`,
-				{
-					method: "GET",
-					cache: "no-store",
-					next: { revalidate: 0 },
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${jwt}`,
-					},
-				}
-			);
-
-			if (!response2.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-
-			const data2 = await response2.json();
-
-			//concat lists
-			const combined = data.results.concat(data1.results);
-			const combined1 = combined.concat(data2.results);
-
-			setSortedCollections(combined1);
-			// console.log(combined);
-			// Handle data as needed
 		} catch (error) {
 			console.error("Error fetching collections:", error);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -140,43 +124,54 @@ export default function AdminCollections() {
 	const handleSort = (criteria) => {
 		setSortCriteria(criteria);
 
-		const sorted = [...sortedCollections].sort((a, b) => {
-			if (criteria === "title") {
-				return a.title.localeCompare(b.title);
-			} else if (criteria === "publication_date") {
-				return (
-					new Date(a.date_of_publication) -
-					new Date(b.date_of_publication)
-				);
-			} else if (criteria === "status-r") {
-				const order = { rejected: 1, pending: 2, approved: 3 };
-				return (
-					(order[a.approval_status] || 4) -
-					(order[b.approval_status] || 4)
-				);
-			} else if (criteria === "status-p") {
-				const order = { pending: 1, approved: 2, rejected: 3 };
-				return (
-					(order[a.approval_status] || 4) -
-					(order[b.approval_status] || 4)
-				);
-			} else if (criteria === "status-a") {
-				const order = { approved: 1, rejected: 2, pending: 3 };
-				return (
-					(order[a.approval_status] || 4) -
-					(order[b.approval_status] || 4)
-				);
-			}
-			return 0;
-		});
+		const sorted = Array.isArray(sortedCollections.results)
+			? [...sortedCollections.results].sort((a, b) => {
+					if (criteria === "title") {
+						return a.title.localeCompare(b.title);
+					} else if (criteria === "publication_date") {
+						return (
+							new Date(a.date_of_publication) -
+							new Date(b.date_of_publication)
+						);
+					} else if (criteria === "status-r") {
+						const order = { rejected: 1, pending: 2, approved: 3 };
+						return (
+							(order[a.approval_status] || 4) -
+							(order[b.approval_status] || 4)
+						);
+					} else if (criteria === "status-p") {
+						const order = { pending: 1, approved: 2, rejected: 3 };
+						return (
+							(order[a.approval_status] || 4) -
+							(order[b.approval_status] || 4)
+						);
+					} else if (criteria === "status-a") {
+						const order = { approved: 1, rejected: 2, pending: 3 };
+						return (
+							(order[a.approval_status] || 4) -
+							(order[b.approval_status] || 4)
+						);
+					}
+					return 0;
+			  })
+			: [];
 
-		setSortedCollections(sorted);
+		setSortedCollections({
+			...sortedCollections,
+			results: sorted,
+		});
 	};
 
 	// Handle status change
-	const handleApproval = async (collectionId, status) => {
-		setIsLoading(true);
+	const handleApproval = async (collectionId, index, status) => {
+		setPendingAction({ id: collectionId, status, index });
+		setShowConfirmationModal(true);
+	};
 
+	const confirmAction = async () => {
+		setShowConfirmationModal(false); // Close confirmation modal first
+		setIsLoading(true);
+		setStatusMessage("");
 		try {
 			const response = await fetch(`${BASE_URL}/collection_status`, {
 				method: "PATCH",
@@ -187,16 +182,23 @@ export default function AdminCollections() {
 					Authorization: "Bearer " + jwt,
 				},
 				body: JSON.stringify({
-					id: collectionId,
-					approval_status: status,
+					id: pendingAction.id,
+					approval_status: pendingAction.status,
 				}),
 			});
 
 			const data = await response.json();
 
 			if (response.ok) {
-				console.log(`Collection ${status} successfully!`);
-				setStatusMessage(`Collection ${status} successfully!`);
+				setStatusMessage(
+					`${pendingAction.status
+						.charAt(0)
+						.toUpperCase()}${pendingAction.status.slice(
+						1
+					)}: Collection Update Successful!`
+				);
+				sortedCollections.results[pendingAction.index].approval_status =
+					pendingAction.status;
 			} else {
 				console.error(`Error: ${data.message}`);
 				setStatusMessage("Update Failed");
@@ -206,7 +208,6 @@ export default function AdminCollections() {
 		} finally {
 			setTimeout(() => {
 				setIsLoading(false);
-				window.location.href = `/admin_collections`;
 			}, 2000);
 		}
 	};
@@ -220,7 +221,7 @@ export default function AdminCollections() {
 	// Display Abstract via popup
 	const Abstract = ({ text = abstract, onClose }) => {
 		return (
-			<div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-10">
+			<div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-20">
 				<div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl">
 					<h2 className="text-lg font-semibold text-ashesi-red mb-4">
 						Abstract
@@ -243,8 +244,38 @@ export default function AdminCollections() {
 		);
 	};
 
+	// Confirmation Modal Component
+	const ConfirmationModal = () => (
+		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+			<div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+				<h2 className="text-xl font-semibold text-ashesi-red mb-4">
+					Confirm Action
+				</h2>
+				<p className="text-gray-700 mb-4">
+					Are you sure you want to set this collection to <strong>{pendingAction.status}</strong>?
+					An email notification will be sent to the
+					contributor.
+				</p>
+				<div className="flex justify-end gap-4">
+					<button
+						className="px-4 py-2 text-sm font-medium bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
+						onClick={() => setShowConfirmationModal(false)}
+					>
+						Cancel
+					</button>
+					<button
+						className="px-4 py-2 text-sm font-medium bg-ashesi-red text-white rounded-md hover:bg-ashesi-red/90 transition"
+						onClick={confirmAction}
+					>
+						Confirm
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+
 	return (
-		<div className="max-w-5xl mx-auto my-24 p-6">
+		<div className="max-w-6xl mx-auto my-24 p-6">
 			{/* Action Buttons */}
 			<div className="flex justify-end items-center space-x-4 mb-4">
 				{/* Buttons for bulk approval */}
@@ -344,196 +375,257 @@ export default function AdminCollections() {
 
 					{/* Table Body */}
 					<tbody className="space-y-4">
-						{sortedCollections && sortedCollections.length > 0 ? (
-							sortedCollections.map((collection) => (
-								<tr
-									key={collection.id}
-									className="border-b space-y-2 shadow-md shadow-gray-100"
-								>
-									<td className="w-96 text-justify p-4 mr-8 hover:text-ashesi-red hover:cursor-pointer">
-										<Link
-											href={`/collections/${collection.id}`}
-										>
-											{collection.title}
-										</Link>
-									</td>
-									<td className="px-6">
-										<button
-											onClick={() =>
-												viewAbstract(
-													collection.abstract
-												)
-											}
-											className="text-ashesi-red font-light cursor-pointer"
-										>
-											abstract
-										</button>
-									</td>
-									<td className="px-6 text-sm">
-										{collection.authors.length > 0 ? (
-											collection.authors.map(
-												(author, index) => (
-													<a
-														key={author.id}
-														href={`mailto:${author.email}`}
-														className="hover:text-blue-600 block pb-2"
+						{!loading ? (
+							sortedCollections.results &&
+							sortedCollections.count > 0 ? (
+								<>
+									{sortedCollections.results.map(
+										(collection, index) => (
+											<tr
+												key={collection.id}
+												className="border-b shadow-md shadow-gray-100 transform transition-all duration-500 translate-x-[-20px] opacity-0 animate-slide-in"
+												style={{
+													animationDelay: `${
+														index * 100
+													}ms`,
+													animationFillMode:
+														"forwards",
+												}}
+											>
+												<td className="w-96 text-justify p-4 mr-8 hover:text-ashesi-red hover:cursor-pointer">
+													<Link
+														href={`/collections/${collection.id}`}
 													>
-														{" "}
-														<b>{index + 1}.</b>{" "}
-														{author.name}
-													</a>
-												)
-											)
-										) : (
-											<span>No author</span>
-										)}
-									</td>
-									<td className="p-4">
-										{collection.date_of_publication.slice(
-											0,
-											10
-										)}
-									</td>
-									<td className="p-4 text-center space-x-2 relative group">
-										{collection.approval_status ===
-										"approved" ? (
-											<div className="inline-flex flex-col items-center justify-center text-green-600 border-green-300 rounded px-2 py-1 text-xs">
-												<FaCheck className="mb-1" />
-												<span>Approved</span>
-											</div>
-										) : collection.approval_status ===
-										  "rejected" ? (
-											<div className="inline-flex flex-col items-center justify-center text-red-600 border-red-300 rounded px-2 py-1 text-xs">
-												<FaTimes className="mb-1" />
-												<span>Rejected</span>
-											</div>
-										) : collection.approval_status ===
-										  "pending" ? (
-											<div className="inline-flex flex-col items-center justify-center text-yellow-600 border-yellow-300 rounded px-2 py-1 text-xs">
-												<FaClock className="mb-1" />
-												<span>Pending</span>
-											</div>
-										) : (
-											<></>
-										)}
-									</td>
-
-									{/* Action Buttons */}
-									<td className="p-4 space-x-2">
-										{collection.approval_status ==
-											"pending" && (
-											<div className="flex flex-col items-center gap-1">
-												{/* Approve Button */}
-												<CustomButton
-													text="Approve"
-													bgColor="bg-green-200 "
-													textColor="text-green-700 "
-													onClick={() =>
-														handleApproval(
-															collection.id,
-															"approved"
+														{collection.title}
+													</Link>
+												</td>
+												<td className="px-6">
+													<button
+														onClick={() =>
+															viewAbstract(
+																collection.abstract
+															)
+														}
+														className="text-ashesi-red font-light cursor-pointer"
+													>
+														abstract
+													</button>
+												</td>
+												<td className="px-6 text-sm">
+													{collection.authors.length >
+													0 ? (
+														collection.authors.map(
+															(author, index) => (
+																<a
+																	key={
+																		author.id
+																	}
+																	href={`mailto:${author.email}`}
+																	className="hover:text-blue-600 block pb-2"
+																>
+																	{" "}
+																	<b>
+																		{index +
+																			1}
+																		.
+																	</b>{" "}
+																	{
+																		author.name
+																	}
+																</a>
+															)
 														)
-													}
-													width="w-full"
-													height="h-8"
-													className="hover:bg-green-200 text-xs px-2 py-1 rounded-md border border-green-300 transition"
-												/>
+													) : (
+														<span>No author</span>
+													)}
+												</td>
+												<td className="p-4">
+													{collection.date_of_publication.slice(
+														0,
+														10
+													)}
+												</td>
+												<td className="p-4 text-center space-x-2 relative group">
+													{collection.approval_status ===
+													"approved" ? (
+														<div className="inline-flex flex-col items-center justify-center text-green-600 border-green-300 rounded px-2 py-1 text-xs">
+															<FaCheck className="mb-1" />
+															<span>
+																Approved
+															</span>
+														</div>
+													) : collection.approval_status ===
+													  "rejected" ? (
+														<div className="inline-flex flex-col items-center justify-center text-red-600 border-red-300 rounded px-2 py-1 text-xs">
+															<FaTimes className="mb-1" />
+															<span>
+																Rejected
+															</span>
+														</div>
+													) : collection.approval_status ===
+													  "pending" ? (
+														<div className="inline-flex flex-col items-center justify-center text-yellow-600 border-yellow-300 rounded px-2 py-1 text-xs">
+															<FaClock className="mb-1" />
+															<span>Pending</span>
+														</div>
+													) : (
+														<></>
+													)}
+												</td>
 
-												{/* Disapprove Button */}
-												<CustomButton
-													text="Reject"
-													bgColor="bg-red-200 "
-													textColor="text-red-700 "
-													onClick={() =>
-														handleApproval(
-															collection.id,
-															"rejected"
-														)
-													}
-													width="w-full"
-													height="h-8"
-													className="hover:bg-red-200 text-xs px-2 py-1 rounded-md border border-red-300 transition"
-												/>
-											</div>
-										)}
+												{/* Action Buttons */}
+												<td className="p-4 space-x-2">
+													{collection.approval_status ==
+														"pending" && (
+														<div className="flex flex-col items-center gap-1">
+															{/* Approve Button */}
+															<CustomButton
+																text="Approve"
+																bgColor="bg-green-200 "
+																textColor="text-green-700 "
+																onClick={() =>
+																	handleApproval(
+																		collection.id,
+																		index,
+																		"approved"
+																	)
+																}
+																width="w-full"
+																height="h-8"
+																className="hover:bg-green-200 text-xs px-2 py-1 rounded-md border border-green-300 transition"
+															/>
 
-										{collection.approval_status ==
-											"rejected" && (
-											<div className="flex flex-col items-center gap-1">
-												{/* Pending Button */}
-												<CustomButton
-													text="Pending"
-													bgColor="bg-yellow-200 "
-													textColor="text-yellow-700 "
-													onClick={() =>
-														handleApproval(
-															collection.id,
-															"pending"
-														)
-													}
-													width="w-full"
-													height="h-8"
-													className="hover:bg-yellow-200 text-xs px-2 py-1 rounded-md border border-yellow-300 transition"
-												/>
+															{/* Disapprove Button */}
+															<CustomButton
+																text="Reject"
+																bgColor="bg-red-200 "
+																textColor="text-red-700 "
+																onClick={() =>
+																	handleApproval(
+																		collection.id,
+																		index,
+																		"rejected"
+																	)
+																}
+																width="w-full"
+																height="h-8"
+																className="hover:bg-red-200 text-xs px-2 py-1 rounded-md border border-red-300 transition"
+															/>
+														</div>
+													)}
 
-												{/* Approve Button */}
-												<CustomButton
-													text="Approve"
-													bgColor="bg-green-200 "
-													textColor="text-green-700 "
-													onClick={() =>
-														handleApproval(
-															collection.id,
-															"approved"
-														)
-													}
-													width="w-full"
-													height="h-8"
-													className="hover:bg-green-200 text-xs px-2 py-1 rounded-md border border-green-300 transition"
-												/>
-											</div>
-										)}
+													{collection.approval_status ==
+														"rejected" && (
+														<div className="flex flex-col items-center gap-1">
+															{/* Pending Button */}
+															<CustomButton
+																text="Pending"
+																bgColor="bg-yellow-200 "
+																textColor="text-yellow-700 "
+																onClick={() =>
+																	handleApproval(
+																		collection.id,
+																		index,
+																		"pending"
+																	)
+																}
+																width="w-full"
+																height="h-8"
+																className="hover:bg-yellow-200 text-xs px-2 py-1 rounded-md border border-yellow-300 transition"
+															/>
 
-										{collection.approval_status ==
-											"approved" && (
-											//   {/* Pending Button with Tooltip */}
-											<div className="flex flex-col items-center gap-1">
-												{/* Pending Button */}
-												<CustomButton
-													text="Pending"
-													bgColor="bg-yellow-200 "
-													textColor="text-yellow-700 "
-													onClick={() =>
-														handleApproval(
-															collection.id,
-															"pending"
-														)
-													}
-													width="w-full"
-													height="h-8"
-													className="hover:bg-yellow-200 text-xs px-2 py-1 rounded-md border border-yellow-300 transition"
-												/>
+															{/* Approve Button */}
+															<CustomButton
+																text="Approve"
+																bgColor="bg-green-200 "
+																textColor="text-green-700 "
+																onClick={() =>
+																	handleApproval(
+																		collection.id,
+																		index,
+																		"approved"
+																	)
+																}
+																width="w-full"
+																height="h-8"
+																className="hover:bg-green-200 text-xs px-2 py-1 rounded-md border border-green-300 transition"
+															/>
+														</div>
+													)}
 
-												{/* Disapprove Button */}
-												<CustomButton
-													text="Reject"
-													bgColor="bg-red-200 "
-													textColor="text-red-700 "
-													onClick={() =>
-														handleApproval(
-															collection.id,
-															"rejected"
-														)
-													}
-													width="w-full"
-													height="h-8"
-													className="hover:bg-red-200 text-xs px-2 py-1 rounded-md border border-red-300 transition"
-												/>
-											</div>
-										)}
+													{collection.approval_status ==
+														"approved" && (
+														//   {/* Pending Button with Tooltip */}
+														<div className="flex flex-col items-center gap-1">
+															{/* Pending Button */}
+															<CustomButton
+																text="Pending"
+																bgColor="bg-yellow-200 "
+																textColor="text-yellow-700 "
+																onClick={() =>
+																	handleApproval(
+																		collection.id,
+																		index,
+																		"pending"
+																	)
+																}
+																width="w-full"
+																height="h-8"
+																className="hover:bg-yellow-200 text-xs px-2 py-1 rounded-md border border-yellow-300 transition"
+															/>
+
+															{/* Disapprove Button */}
+															<CustomButton
+																text="Reject"
+																bgColor="bg-red-200 "
+																textColor="text-red-700 "
+																onClick={() =>
+																	handleApproval(
+																		collection.id,
+																		index,
+																		"rejected"
+																	)
+																}
+																width="w-full"
+																height="h-8"
+																className="hover:bg-red-200 text-xs px-2 py-1 rounded-md border border-red-300 transition"
+															/>
+														</div>
+													)}
+												</td>
+											</tr>
+										)
+									)}
+									<tr className="">
+										<td colSpan="6" className="py-4">
+											<CollectionsPagination
+												nextUrl={sortedCollections.next}
+												previousUrl={
+													sortedCollections.previous
+												}
+												onPageChange={getCollections}
+												currentPage={currentPage}
+												numberCollections={
+													numberCollections
+												}
+												adminsAddition={5}
+											/>
+										</td>
+									</tr>
+								</>
+							) : (
+								<tr>
+									<td
+										colSpan="6"
+										className="p-3 text-center text-gray-500"
+									>
+										<div className="block font-bold text-2xl text-ashesi-red">
+											{" "}
+											Sorry, No Collection Found!{" "}
+										</div>
 									</td>
 								</tr>
-							))
+							)
 						) : (
 							<tr>
 								<td
@@ -559,7 +651,13 @@ export default function AdminCollections() {
 									</div>
 
 									{statusMessage ? (
-										<div className="text-green-700 font-bold text-center">
+										<div
+											className={`font-bold text-center ${
+												statusMessage.includes("Failed")
+													? "text-red-700"
+													: "text-green-700"
+											}`}
+										>
 											{statusMessage}
 										</div>
 									) : (
@@ -573,6 +671,7 @@ export default function AdminCollections() {
 					</tbody>
 				</table>
 			</div>
+			{showConfirmationModal && <ConfirmationModal />}
 		</div>
 	);
 }

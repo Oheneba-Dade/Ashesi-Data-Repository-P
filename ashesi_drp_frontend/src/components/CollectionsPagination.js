@@ -7,15 +7,16 @@ export default function CollectionsPagination({
                                                   onPageChange,
                                                   currentPage,
                                                   numberCollections,
+                                                  adminsAddition=0
                                               }) {
     const [numberOfPages, setNumberOfPages] = useState(1);
 
     useEffect(() => {
-        setNumberOfPages(Math.ceil(numberCollections / NUM_COLLECTIONS_PER_PAGE));
+        setNumberOfPages(Math.ceil(numberCollections / (NUM_COLLECTIONS_PER_PAGE+adminsAddition)));
     }, [numberCollections]);
 
     return (
-        <div className="flex justify-between mt-8">
+        <div className="flex justify-around mt-8">
             <button
                 onClick={() => onPageChange(previousUrl)}
                 disabled={!previousUrl}

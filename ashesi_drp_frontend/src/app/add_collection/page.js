@@ -43,7 +43,8 @@ const LoadingOverlay = ({ show }) => (
 			show ? "opacity-100 visible" : "opacity-0 invisible"
 		}`}
 	>
-		<div className="bg-white p-12 rounded-md shadow-lg">
+		<div className="bg-white p-12 rounded-md shadow-lg flex flex-col items-center">
+			<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-ashesi-red mb-4"></div>
 			<p className="text-lg font-semibold text-ashesi-red">
 				Publishing Collection...
 			</p>
@@ -58,9 +59,27 @@ const Modal = ({ show, message, onClose }) => (
 		}`}
 	>
 		<div className="bg-white p-6 rounded-md shadow-lg text-center max-w-sm">
-			<p className="text-lg">{message}</p>
+			<div className="flex justify-center mb-4">
+				<div className="w-16 h-16 border-4 border-green-500 rounded-full flex items-center justify-center">
+					<svg
+						className="w-8 h-8 text-green-500"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							d="M5 13l4 4L19 7"
+						></path>
+					</svg>
+				</div>
+			</div>
+			<p className="text-lg text-gray-700">{message}</p>
 			<button
-				className="mt-4 px-4 py-2 bg-ashesi-red text-white rounded-md"
+				className="mt-4 px-4 py-2 bg-ashesi-red text-white rounded-md hover:bg-ashesi-red/90 transition-colors"
 				onClick={onClose}
 			>
 				OK
@@ -120,7 +139,7 @@ export default function AddDataset() {
 					authors: JSON.stringify(authors),
 					doi_link: doi_link,
 					citation: citation,
-					keywords: JSON.stringify(keywords),
+					keywords: keywords.join(","),
 					abstract: abstract,
 					comment: comments,
 					instance_representation: instance_representation,
@@ -133,7 +152,9 @@ export default function AddDataset() {
 				}
 			);
 			if (response.status === 201) {
-				setModalMessage("Collection Published Successfully!");
+				setModalMessage(
+					"Collection pending review. Once reviewed by an administrator, it will be published"
+				);
 				setIsSuccess(true);
 			} else {
 				console.log(response);
