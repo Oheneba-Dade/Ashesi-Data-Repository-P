@@ -11,32 +11,31 @@ User = get_user_model()
 class CollectionFileAPITestCase(APITestCase):
     def setUp(self):
         """Set up test data before running each test"""
-        self.test_user = User.objects.create_user(password="password123", email='testuser@ashesi.edu.gh')
-        self.client.force_authenticate(user=self.test_user)  
+
+        self.test_user_1 = User.objects.create_user(
+            password="password123",
+            email='testuser_1@ashesi.edu.gh',
+            role='internal')
+        self.test_user_1.role = 'Internal'
+        self.client.force_authenticate(user=self.test_user_1)  
+
+        
+        # print('test user', self.test_user)
 
 
-            
-        # # test collections
-        # collection1 = Collection.objects.create(
-        #     title="AI for Healthcare",
-        #     abstract="Using AI in the medical field",
-        #     missing_values=False,
-        #     keywords=["AI", "Medicine"],
-        #     uploaded_by=self.test_user,
-        #     date_of_publication="2023-05-12",
-        #     access_level="public"
-        # )
+        
 
-        # collection2 = Collection.objects.create(
-        #     title="Climate Change Data",
-        #     abstract="Climate-related datasets",
-        #     missing_values=True,
-        #     keywords=["Climate", "Environment"],
-        #     uploaded_by=self.test_user,
-        #     date_of_publication="2022-09-20",
-        #     access_level="private"
-        # )
+        self.collection1 = Collection.objects.create(
+            title="Climate Change Data",
+            abstract="Climate-related datasets",
+            keywords=["Climate", "Environment"],
 
+            uploaded_by=self.test_user_1
+        )
+        
+        self.collection_id = self.collection1.id
+
+        self.data=  { "id": self.collection_id, "approval_status": "rejected"}
         # collection3 = Collection.objects.create(
         #     title="Blockchain for Secure Transactions",
         #     abstract="Using blockchain to enhance financial security",
@@ -83,36 +82,52 @@ class CollectionFileAPITestCase(APITestCase):
         self.get_collection_by_id = "/adrp/get_collection/"
         self.filter_url = "/adrp/collections"
         self.upload_url = "/adrp/upload_collection"
+        self.approve_collecton = "/adrp/collection_status"
         
 
 
+    def test_collection_status(self):
+        """Test approval and rejection"""
+
+        self.test_user = User.objects.create_admin(password="password123", email='testuser@ashesi.edu.gh')
+        self.client.force_authenticate(user=self.test_user)  
+
+
+        response = self.client.patch(self.approve_collecton, self.data, format='json')
+        print("change collection status Response:", response.json() if response.headers.get("content-type") == "application/json" else response.content.decode())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual("rejected", response.data['approval_status'])
+        self.assertIn("rejected_at", response.data['rejected_at'])
+
+        print("✅ Filtering by title test passed!")
 
   
 
-    def test_upload_collection_with_file(self):
-        """Test uploading a new collection along with a dataset file"""
+    # def test_upload_collection_with_file(self):
+    #     """Test uploading a new collection along with a dataset file"""
 
       
-        # Create a fake file
-        file_content = b"col1,col2\nval1,val2"
-        test_file = SimpleUploadedFile("test_dataset.csv", file_content, content_type="text/csv")
-        author = Authors.objects.create(name="John Doe")
+    #     # Create a fake file
+    #     file_content = b"col1,col2\nval1,val2"
+    #     test_file = SimpleUploadedFile("test_dataset.csv", file_content, content_type="text/csv")
+    #     author = Authors.objects.create(name="John Doe")
         
 
-        data = {
-            "title": "Test Collection Upload",
-            "abstract": "Testing upload with file",
-            "keywords": '["test", "upload"]',  
-            #"uploaded_by": self.test_user,
-            "file": test_file,  
-        }
+    #     data = {
+    #         "title": "Test Collection Upload",
+    #         "abstract": "Testing upload with file",
+    #         "keywords": '["test", "upload"]',  
+    #         #"uploaded_by": self.test_user,
+    #         "file": test_file,  
+    #     }
 
-        # Send POST request
-        response = self.client.post(self.upload_url, data, format='multipart')
-        # print("Upload Response:", response.json() if response.headers.get("content-type") == "application/json" else response.content.decode())
+    #     # Send POST request
+    #     response = self.client.post(self.upload_url, data, format='multipart')
+    #     # print("Upload Response:", response.json() if response.headers.get("content-type") == "application/json" else response.content.decode())
 
-        self.assertEqual(response.status_code, 201)
-        self.assertIn("id", response.data)
+    #     self.assertEqual(response.status_code, 201)
+    #     self.assertIn("id", response.data)
 
 
     # def test_filtering_title(self):

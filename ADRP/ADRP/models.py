@@ -4,7 +4,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 from django.utils.timezone import localtime
-
 from .helpers import check_email_domain
 
 
@@ -20,26 +19,30 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('The Email field has not been set')
 
-        # Set internal or external role based on email
+        email = self.normalize_email(email).lower()
+
+        # Set defaults BEFORE instantiating the model
         if check_email_domain(email):
             extra_fields.setdefault('role', 'internal')
         else:
             extra_fields.setdefault('role', 'external')
 
-        # Set other fields
-        email = self.normalize_email(email).lower()
-        user = self.model(email=email, **extra_fields)
         extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_superuser', False)
+        extra_fields.setdefault('is_staff', False)
 
-        # Special logic for superusers
-        if extra_fields.get('is_superuser') is False:
-            user.set_unusable_password()
-        else:
+        # Create user instance
+        user = self.model(email=email, **extra_fields)
+
+        if extra_fields.get('is_superuser'):
             user.set_password(password)
+        else:
+            user.set_unusable_password()
 
         user.save()
-
         return user
+
+
 
     def create_superuser(self, email, password, **extra_fields):
         """ Creates and saves a superuser """
@@ -151,22 +154,41 @@ class Collection(models.Model):
                                     related_name='approved_collections')
     approved_at = models.DateTimeField(null=True, blank=True)
 
+
+    rejected_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='rejected_collections')
+    rejected_at = models.DateTimeField(null=True, blank=True)
+
     def approve(self, admin_user):
         self.approval_status = 'approved'
         self.approved_by = admin_user
         self.approved_at = timezone.now()
+        self.rejected_at = None
+        self.rejected_by = None
         self.save()
 
-    def reject(self):
+    def reject(self, admin_user):
         self.approval_status = 'rejected'
+        self.rejected_by = admin_user
+        self.rejected_at = timezone.now()
+        self.approved_at = None
+        self.approved_by = None
         self.save()
 
     def is_approved(self):
         return self.approval_status == 'approved'
+    
+    def is_rejected(self):
+        return self.approval_status == 'rejected'
 
     def __str__(self):
         formatted_date = localtime(self.upload_date).strftime('%Y-%m-%d %H:%M')
-        return f"{self.title} | Uploaded by: {self.uploaded_by.email} | Date: {formatted_date} | Status: {self.approval_status}"
+        base_info = f"{self.title} | Uploaded by: {self.uploaded_by.email} | Date: {formatted_date} | Status: {self.approval_status}"
+
+        if self.approval_status == 'approved':
+            return f"{base_info} | Approved by: {self.approved_by}"
+        elif self.approval_status == 'rejected':
+            return f"{base_info} | Rejected by: {self.rejected_by}"
+        return base_info
 
     class Meta:
         ordering = ["-upload_date"]

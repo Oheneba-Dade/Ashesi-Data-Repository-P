@@ -58,14 +58,7 @@ def delete_collection(request: Request) -> Response:
     return Response(data={}, status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['PATCH'])
-@permission_classes([IsInternalAdmin])
-def change_collection_status(request: Request) -> Response:
-    """Change the status of a collection"""
 
-    response = CollectionsService.change_collection_status(request)
-
-    return response
 
 
 @api_view(['PATCH'])
@@ -73,9 +66,9 @@ def change_collection_status(request: Request) -> Response:
 def change_collection_status(request: Request) -> Response:
     """Change the status of a collection"""
 
-    response = CollectionsService.change_collection_status(request)
+    result = CollectionsService.change_collection_status(request)
 
-    return response
+    return Response(result, status=result.get("status", status.HTTP_200_OK))
 
 
 @api_view(['POST'])
@@ -86,9 +79,7 @@ def upload_collection(request):
     return Response(result, status=result.get("status", status.HTTP_200_OK))
 
 
-
-# filter stuff
-
+## Filter
 @permission_classes([AllowAny])
 class CollectionListView(generics.ListAPIView):
     """

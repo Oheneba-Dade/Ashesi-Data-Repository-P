@@ -4,9 +4,9 @@ import "../globals.css";
 
 export default function DataPolicy() {
 	return (
-		<div className="container mx-auto mt-32 px-64">
-			<h1 className="text-ashesi-red font-bold text-4xl mb-8 ">
-				Data Policy
+		<div className="container mx-auto mt-32 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+			<h1 className="text-ashesi-red font-bold text-3xl sm:text-4xl mb-8">
+				Policy
 			</h1>
 			<p className="text-base/8 mb-8">
 				Thank you for considering the contribution of a dataset to the
@@ -62,7 +62,7 @@ export default function DataPolicy() {
 					bgColor="bg-gray-100"
 					textColor="text-ashesi-red"
 					border="border border-ashesi-red"
-					width="1/2"
+					width="w-72 sm:w-80 md:w-96"
 					href="/auth"
 				/>
 			</div>

@@ -22,18 +22,20 @@ export default async function Collections() {
 	}
 
 	return (
-		<div className="relative w-full">
-			<div className="mt-24 mb-8">
-				<h1 className="font-semibold text-2xl text-center">
-					PUBLISHED COLLECTIONS
-				</h1>
-			</div>
+		<div className="relative w-full min-h-screen">
+			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="mt-16 sm:mt-20 md:mt-24 mb-6 sm:mb-8">
+					<h1 className="font-semibold text-xl sm:text-2xl text-center">
+						PUBLISHED COLLECTIONS
+					</h1>
+				</div>
 
-			<div className="container mx-auto">
-				<hr className="mb-8" />
-			</div>
+				<div className="w-full">
+					<hr className="mb-6 sm:mb-8" />
+				</div>
 
-			<CollectionsContainer initialCollections={initialCollections} />
+				<CollectionsContainer initialCollections={initialCollections} />
+			</div>
 		</div>
 	);
 }

@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from .collections_service_repository import *
 from ...serializers import CollectionSerializer
 from ..dataset_service.dataset_service_main import DatasetService
-from ..email_service.email_service_main import EmailService
 from django.db import transaction
 
 class CollectionsService:
@@ -27,6 +26,7 @@ class CollectionsService:
 
         raise ValidationError(serializer.errors)
     
+
     @staticmethod
     def upload_collection(request_obj: Request):
         """ uploads collection then dataset if one fails delete prevent any from entring database"""
@@ -38,6 +38,7 @@ class CollectionsService:
         # print('here 3')
         serializer = CollectionSerializer(data=request_obj.data, context={'request': request_obj})
         if serializer.is_valid():
+            # print("valid obj")
             try:
                with transaction.atomic():
                     try:
@@ -49,22 +50,23 @@ class CollectionsService:
                     save_authors(request_obj, new_collection)
 
                     collection_id = new_collection.id
-                    user = get_collection_by_id(collection_id).uploaded_by
                     result = DatasetService.handle_dataset_upload(collection_id, dataset_fileobj)
-                    CollectionsService.inform_contributor_of_collection_status("NEW_SUBMISSION", user)
+                    # print('data set result', result)
 
                     if result.get("status") != 201:
                         raise Exception("Dataset upload failed")
 
                     return {"message": "Collection and dataset uploaded successfully.",
                             "collection": CollectionSerializer(new_collection, context={'request': request_obj}).data,
-                            "status":status.HTTP_201_CREATED}
+                            "status":201}
 
 
             except Exception as e:
-                return {"error": str(e), "status":status.HTTP_500_INTERNAL_SERVER_ERROR}
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return serializer.errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
     @staticmethod
     def delete_collection(request_obj: Request):
         """Delete a collection by the ID"""
@@ -115,48 +117,19 @@ class CollectionsService:
         return serialized_data.data
 
     @staticmethod
-    def inform_contributor_of_collection_status(status,user):
-        email_service = EmailService(recipients=[user.email],
-                                     purpose=status,
-                                     context={})
-        email_service.send()
-
-
-
-    @staticmethod
     def change_collection_status(request_obj: Request):
         """ Change the status of a collection"""
 
         try:
             collection = get_collection_by_id(request_obj.data.get('id'))
 
-            # Get the current logged-in user
-            admin_user = request_obj.user  
-            # print(admin_user)
-        
-            if admin_user.role != "admin":  
-                return {'error': 'Only admin users can change collection status',
-                        "status":status.HTTP_403_FORBIDDEN}
-            
             serializer = CollectionSerializer(instance=collection, data=request_obj.data, partial=True)
-            user = collection.uploaded_by
+
             if serializer.is_valid():
-                approval_status = serializer.validated_data['approval_status']
+                collection.approval_status = serializer.validated_data['approval_status']
+                collection.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
 
-                if approval_status == "approved":
-                    collection.approve(admin_user=admin_user)
-                    CollectionsService.inform_contributor_of_collection_status("APPROVE_SUBMISSION", user)
-                elif approval_status == 'rejected':
-                    collection.reject(admin_user=admin_user)
-                    CollectionsService.inform_contributor_of_collection_status("REJECT_SUBMISSION", user)
-                else:
-                    collection.approval_status = serializer.validated_data['approval_status']
-                    collection.save()
-                    CollectionsService.inform_contributor_of_collection_status("PENDING_SUBMISSION", user)
-
-                # print('updated collection',collection)
-                return serializer.data
-
-            return {'error': serializer.errors, "status":status.HTTP_400_BAD_REQUEST}
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return {'error': str(e), "status":status.HTTP_400_BAD_REQUEST}
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

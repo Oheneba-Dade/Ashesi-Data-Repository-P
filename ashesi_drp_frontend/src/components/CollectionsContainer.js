@@ -107,20 +107,22 @@ export default function CollectionsContainer({
 	};
 
 	return (
-		<div className="mb-14 w-full px-4 md:px-8 lg:px-16">
-			<div className="flex flex-col md:flex-row md:gap-8 lg:gap-20">
+		<div className="mb-8 sm:mb-10 md:mb-14 w-full">
+			<div className="flex flex-col lg:flex-row lg:gap-8 xl:gap-20">
 				{filterOn && (
-					<div className="w-full md:w-auto md:min-w-[320px] mb-8 md:mb-0 md:sticky md:top-0 md:self-start md:pt-8">
-						<Filter
-							onFilterResults={handleFilterResults}
-							onResetFilter={handleResetFilter}
-							setLoading={setLoading}
-						/>
+					<div className="lg:w-auto lg:min-w-[280px] xl:min-w-[320px] lg:sticky lg:top-24 lg:self-start lg:h-fit">
+						<div className="bg-white rounded-lg shadow-sm">
+							<Filter
+								onFilterResults={handleFilterResults}
+								onResetFilter={handleResetFilter}
+								setLoading={setLoading}
+							/>
+						</div>
 					</div>
 				)}
 				<div
 					className={`w-full ${
-						filterOn ? "md:flex-1" : "max-w-3xl mx-auto"
+						filterOn ? "lg:flex-1" : "max-w-3xl mx-auto"
 					}`}
 				>
 					{loading ? (
@@ -129,7 +131,7 @@ export default function CollectionsContainer({
 						<>
 							{collections.results && collections.count > 0 ? (
 								<>
-									<ul>
+									<ul className="space-y-4 sm:space-y-6">
 										{collections.results.map(
 											(collection) => (
 												<CollectionItem

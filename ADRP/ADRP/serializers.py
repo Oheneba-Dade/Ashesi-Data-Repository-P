@@ -34,8 +34,10 @@ class CollectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Collection
-        fields = ['id', 'title', 'doi_link', 'keywords', 'abstract', 'instance_representation', 'comment',
-                  'date_of_publication', 'approval_status', 'view_count',  'authors']
+        # fields = '__all__'
+        fields = ['id', 'title', 'doi_link', 'keywords', 'abstract', 'instance_representation',
+                   'comment','date_of_publication', 'approval_status', 'approved_by' ,'approved_at', 
+                   'rejected_by' ,'rejected_at', 'view_count',  'authors']
 
     def create(self, validated_data):
         # authors_data = validated_data.pop('authors', [])

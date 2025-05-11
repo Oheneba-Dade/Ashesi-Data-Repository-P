@@ -1,0 +1,5 @@
+Unfortunately, your submission to the Ashesi Data Repository has not been approved.
+Please find the reason for this decision below:
+{{ reason }}
+
+If you believe this should be overlooked, send an email to dowusu@ashesi.edu.gh

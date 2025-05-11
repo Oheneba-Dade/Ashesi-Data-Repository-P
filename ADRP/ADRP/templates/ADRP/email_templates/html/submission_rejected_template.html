@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRP Submission Approved</title>
+    <title>ADRP Submission Rejected</title>
     <style>
         :root {
             --primary-color: #884243;
@@ -65,19 +65,13 @@
    Ashesi University Data Repository
 </div>
 
-<!-- OTP Content -->
+
 <div class="content">
-    <h2>Congratulations!</h2>
-    <h3> Your submission to the Ashesi Data Repository has been approved!</h3>
-    <p>Please use the following link to view your submission</p>
-        <div class="otp" style="letter-spacing: normal; font-size: 16px; word-break: break-all;">
-            <a href="{{ dataset_link }}" style="color: var(--primary-color); text-decoration: underline;">
-                {{ dataset_link}}
-            </a>
-        </div>
-
-
-
+    <h2>Sorry :(</h2>
+    <h3>Unfortunately your submission to the Ashesi Data Repository has not been approved</h3>
+    <p>Please find the reason for this decision here:</p>
+    <p>{{ reason }}</p>
+    <p><em>If you believe this should be overlooked, send an email to <strong>dowusu@ashesi.edu.gh</strong></em></p>
 
 </div>
 

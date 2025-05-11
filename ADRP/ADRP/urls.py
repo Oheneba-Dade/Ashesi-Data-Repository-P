@@ -26,12 +26,12 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from .views.dataset_views.dataset_file import * 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    # path("admin/", admin.site.urls),
 
     # Collection views
     path("adrp/get_all_collections/", get_all_collections),
     path("adrp/get_collection/", get_collection),
-    path("adrp/create_collection", create_collection),
+    # path("adrp/create_collection", create_collection),
     path("adrp/collections", CollectionListView.as_view(), name="collection-list"),
     path("adrp/collection_status", change_collection_status),
     path("adrp/upload_collection", upload_collection, name='upload_collection'),
@@ -40,11 +40,11 @@ urlpatterns = [
     path("adrp/get_otp",get_OTP),
     path("adrp/login",login),
     path("adrp/token/refresh", TokenRefreshView.as_view()),
-    path("adrp/whoami",whoami),
+    # path("adrp/whoami",whoami),
 
     # Docs
-    path('adrp/api_schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('adrp/api_docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    # path('adrp/api_schema/', SpectacularAPIView.as_view(), name='schema'),
+    # path('adrp/api_docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 
     # Dataset
     path("adrp/dataset_upload/", upload_dataset, name="upload_dataset"),

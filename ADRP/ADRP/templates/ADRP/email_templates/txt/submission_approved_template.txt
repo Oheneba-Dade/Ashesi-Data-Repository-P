@@ -1,0 +1,4 @@
+Congratulations!
+Your submission to the Ashesi Data Repository has been approved!
+Please use the following link to view your submission
+{{ dataset_link }}

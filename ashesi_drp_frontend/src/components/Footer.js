@@ -17,8 +17,14 @@ export default function Footer() {
 	const icons = [
 		{ component: FaUniversity, link: "https://ashesi.edu.gh/" },
 		{ component: SiFacebook, link: "https://www.facebook.com/Ashesi/" },
-		{ component: SiInstagram, link: "https://www.instagram.com/ashesi/?hl=en" },
-		{ component: SiLinkedin, link: "https://gh.linkedin.com/school/ashesiuniversity/" },
+		{
+			component: SiInstagram,
+			link: "https://www.instagram.com/ashesi/?hl=en",
+		},
+		{
+			component: SiLinkedin,
+			link: "https://gh.linkedin.com/school/ashesiuniversity/",
+		},
 		{ component: SiX, link: "https://twitter.com/Ashesi/" },
 		{ component: SiYoutube, link: "https://www.youtube.com/@ashesiuni" },
 	];
@@ -33,38 +39,40 @@ export default function Footer() {
 				{/*<CustomButton bgColor="bg-white" textColor="text-ashesi-red" text="Login Now!" href="/" />*/}
 			</div>
 			<div className="flex justify-center py-10">
-				<Image
-					src="/images/logo.webp"
-					alt="Ashesi Logo"
-					width={200}
-					height={200}
-					className="object-contain"
-				/>
+				<div className="w-[300px]">
+					<Image
+						src="/images/logo.webp"
+						alt="Ashesi Logo"
+						width={200}
+						height={200}
+						className="object-contain mx-auto"
+					/>
+				</div>
 			</div>
-			<div className="grid grid-cols-3 gap-4 mb-20 place-items-center">
-				<div className="flex gap-5 justify-center">
+			<div className="flex flex-col lg:flex-row justify-center lg:justify-between items-center gap-8 mb-20 px-4 lg:px-32">
+				<div className="flex gap-5 justify-center w-[300px]">
 					{icons.map(({ component, link }, index) => (
 						<SocialIcon key={link} icon={component} link={link} />
 					))}
 				</div>
-				<div>
-					<p className="text-center">
+				<div className="text-center w-[300px]">
+					<p>
 						1 University Avenue,
 						<br /> Berekuso, Ghana
 					</p>
 					<br />
-					<p className="text-center">
+					<p>
 						<strong>Phone:</strong>&nbsp;&nbsp;+233 302 610 330
 					</p>
-					<p className="text-center">
+					<p>
 						<strong>Email:</strong>&nbsp;&nbsp;info@ashesi.edu.gh
 					</p>
 				</div>
-				<div>
+				<div className="text-center w-[300px]">
 					<FooterLink title="Home" link="/" />
 					<FooterLink title="About The Project" link="/about" />
 					<FooterLink title="View Collections" link="/collections" />
-					<FooterLink title="Data Policy" link="/data_policy" />
+					<FooterLink title="Policy" link="/policy" />
 				</div>
 			</div>
 			<div className="bg-ashesi-gray flex justify-center items-center py-6">
