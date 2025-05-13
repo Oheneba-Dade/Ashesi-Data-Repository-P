@@ -132,7 +132,7 @@ export default function Filter({ onFilterResults, onResetFilter, setLoading }) {
 				</label>
 				<input
 					type="text"
-					className="w-full outline-ashesi-red border border-ashesi-red rounded-md px-4 text-sm sm:text-base"
+					className="w-full outline-ashesi-red border border-ashesi-red rounded-md py-2 px-4 text-sm sm:text-base"
 					name="collection-name"
 					defaultValue={initialTitle}
 				/>
