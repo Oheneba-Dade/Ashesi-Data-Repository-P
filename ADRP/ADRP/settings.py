@@ -177,6 +177,9 @@ AWS_S3_WAITING_APPROVAL_CUSTOM_DOMAIN = f"{AWS_INITIAL_BUCKET}.s3.amazonaws.com"
 AWS_S3_APPROVED_CUSTOM_DOMAIN = f"{AWS_APPROVED_BUCKET}.s3.amazonaws.com"
 
 
+# Statistics service
+REFRESH_DELTA = 6
+
 
 
 

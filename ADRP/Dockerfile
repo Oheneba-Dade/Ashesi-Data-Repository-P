@@ -19,6 +19,8 @@ CMD ["sh", "-c", "\
     echo 'Running migrations...' && \
     python manage.py makemigrations ADRP && \
     python manage.py migrate && \
+    echo 'Re-balancing ADRP Stats...' && \
+    python manage.py rebalancestats && \
     echo 'Starting server...' && \
     gunicorn ADRP.wsgi:application --bind 0.0.0.0:8000 --workers 4 \
 "]

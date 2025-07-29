@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.timezone import localtime
 from .helpers import check_email_domain
+from .settings import OTP_LENGTH
 
 
 class CustomUserManager(BaseUserManager):
@@ -262,7 +263,7 @@ class AccessRequest(models.Model):
 
 class OTP(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    otp = models.TextField(max_length=6)
+    otp = models.TextField(max_length=OTP_LENGTH)
     life_time_mins = models.IntegerField(default=5)
     created_at = models.DateTimeField(default=timezone.now, db_index=True)
     expiry_date = models.DateTimeField()
@@ -279,6 +280,8 @@ class Statistics(models.Model):
     view_count = models.IntegerField(default=0)
     author_count = models.IntegerField(default=0)
     collection_count = models.IntegerField(default=0)
+    date_added = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return (f"downloads:{self.download_count} downloads,"

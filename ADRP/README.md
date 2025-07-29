@@ -27,9 +27,10 @@ ADRP/                                       # Project root
 │   │       ├── custom_pagination.py        # Logic for role based pagination
 │   │    ├── endpoint_samples/              # Contains sample endpoint requests using the Jetbrains HTTP client format
 │   │    ├── migrations/                    # Django DB Migrations
+│   │    ├── management/                    # Contains custom manage.py instructions
 │   │    ├── templates/                     # HTML Templates used for email notifications
 │   │    ├── views/                         # API endpoint defintions
-│   │    ├── serializers.py                           # Serializers for relevant models
+│   │    ├── serializers.py                 # Serializers for relevant models
 │   │    ├── *.py                           # Other python files used by the Django framework
 │   ├── staticfiles/                        # Contains the static frontend files for DRF 
 │   ├── manage.py                           # Used to run the Django project and perform other related actions
@@ -54,8 +55,9 @@ To run the gunicorn server for the API you should:
 2. Create database migrations by typing the following in the terminal
 ```python manage.py makemigrations```
 3. Apply database migrations with ```python mangage.py migrate```
-4. Run ```python manage.py collectstatic``` to build the static files needed for Django related pages
-5. Finally, run the server with ```python manage.py runserver```
+4. Calculate site wide stats with ```python manage.py rebalancestats```
+5. Run ```python manage.py collectstatic``` to build the static files needed for Django related pages
+6. Finally, run the server with ```python manage.py runserver```
 
 
 ### Modifying API Settings
@@ -79,15 +81,20 @@ These include:
 All of these can be changed within the .env file
 
 
-### ToDo before deploying
+### Todo before deploying
 The following checklist should be followed before the API is made publicly available:
 https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 
 ### Current deployment config
-Currently, we use Docker for deployments. The relevant ```docker-compose.yml``` and ```Dockerfile``` have been provided.
-It is set to automatically restart the container in case of any fatal errors. Additionally, it is configured to run using 
-the WSGI server with 4 workers attached. To scale, the number of workers can be increased.
+Currently, we use Docker for deployments. The relevant ```Dockerfile``` has been provided.
+It is configured to run using the WSGI server with 4 workers attached. To scale, the number of workers can be increased.
+
+
+### Future Improvements
+1. Currently, the statistics are re-calculated every 6 hours. This is an okay implementation, but it is possible to
+implement the Statistics Service such that it is only necessary when an update to the code base is made
+2. 
 
 
 

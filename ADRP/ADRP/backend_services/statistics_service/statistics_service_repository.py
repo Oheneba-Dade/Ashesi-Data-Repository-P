@@ -39,7 +39,9 @@ def re_balance_stats():
     """Performs count operations on all relevant DB tables and stores them in the
     statistics table"""
 
-    stats = Statistics.objects.filter(id=1).first()
+    stats, created = Statistics.objects.get_or_create(id=1)
+
+    print(stats)
 
     stats.download_count = DatasetFile.objects.aggregate(total=Sum('download_count'))['total'] or 0
     stats.collection_count = Collection.objects.count()
