@@ -23,7 +23,8 @@ from django.db.models import Sum
 def get_all_stats():
     """Returns the first row of the collections table which SHOULD contain
     the auto updated stats for the website"""
-    return Statistics.objects.filter(id=1).first()
+    statistics, created = Statistics.objects.get_or_create(id=1)
+    return statistics
 
 
 def reset_all_stats():

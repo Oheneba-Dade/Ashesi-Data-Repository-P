@@ -16,6 +16,9 @@ import corsheaders
 import environ
 import os
 from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,9 +56,15 @@ INSTALLED_APPS = [
     'rest_framework_recaptcha'
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Next.js frontend
-]
+if not DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",  # Next.js frontend
+        "*"
+    ]
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000"  # Next.js frontend
+    ]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -150,17 +159,28 @@ DATABASES = {
         'PASSWORD': env('DB_PASSWORD'),
         'HOST': env('DB_HOST'),
         'PORT': env.int('DB_PORT', 5432),
+        'OPTIONS': {
+            'sslmode': 'require' 
+        }
     }
 }
-
-# AWS bucket creditionals
+# AWS bucket credentials
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = "adrptestbucket"
-AWS_S3_REGION_NAME = "eu-north-1"
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+AWS_INITIAL_BUCKET = "data-repository-initial-upload-bucket"
+AWS_APPROVED_BUCKET = "data-repository-approved-uploads-bucket"
+# Region
+AWS_S3_REGION_NAME = "eu-west-2"
+
+AWS_S3_WAITING_APPROVAL_CUSTOM_DOMAIN = f"{AWS_INITIAL_BUCKET}.s3.amazonaws.com"
+AWS_S3_APPROVED_CUSTOM_DOMAIN = f"{AWS_APPROVED_BUCKET}.s3.amazonaws.com"
+
+
+
+
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage" 
 
 # For serving static files directly from S3
 AWS_S3_URL_PROTOCOL = 'https'
@@ -176,8 +196,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 
-MEDIA_URL = f'{AWS_S3_URL_PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/media/'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# MEDIA_URL = f'{AWS_S3_URL_PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/media/'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

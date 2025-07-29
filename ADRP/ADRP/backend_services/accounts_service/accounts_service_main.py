@@ -52,7 +52,7 @@ class AccountsService:
             new_otp = create_new_otp(user, new_otp, lifetime)
         else:
             user = AccountsService.create_new_user(request_obj)
-            increment_global_user_count()
+            # increment_global_user_count()
             new_otp = create_new_otp(user, new_otp, lifetime)
 
         return new_otp

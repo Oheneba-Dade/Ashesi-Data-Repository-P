@@ -1,19 +1,24 @@
-FROM --platform=linux/amd64 python:3.11-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies
+RUN apt-get update && \
+    apt-get install -y netcat-openbsd && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application
-COPY . .
+COPY . /app/
 
-# At the end of Dockerfile, after COPY . .
-RUN python manage.py collectstatic --noinput
-
-# Set environment variables
 ENV PYTHONUNBUFFERED=1
 
-# Gunicorn command
-CMD ["/usr/local/bin/gunicorn", "ADRP.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
+EXPOSE 8000
+
+CMD ["sh", "-c", "\
+    echo 'Running migrations...' && \
+    python manage.py makemigrations ADRP && \
+    python manage.py migrate && \
+    echo 'Starting server...' && \
+    gunicorn ADRP.wsgi:application --bind 0.0.0.0:8000 --workers 4 \
+"]

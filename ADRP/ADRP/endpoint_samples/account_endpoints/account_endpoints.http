@@ -1,6 +1,9 @@
 ### GET OTP for a user
-GET http://localhost:8000/adrp/get_otp?email=sblank.blankson@gmail.com
+GET https://adrp-final-pouo2.ondigitalocean.app/adrp/get_otp?email=sblank.blankson@gmail.com
 
+
+### GET OTP for a user
+GET http://localhost:8000/adrp/get_otp?email=sblank.blankson@gmail.com
 
 ### GET OTP for a user
 GET https://adrp-test-api-pq5km.ondigitalocean.app/adrp/get_otp?email=samuel.blankson@ashesi.edu.gh

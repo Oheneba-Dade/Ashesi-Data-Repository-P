@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 MAX_FILE_SIZE_MB = 500 # cant upload fles over 500 mb can be changed later
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 
+# TODO: Add scanning of repository (using s3 security features - guard duty)
+# TODO: Use a separate s3 bucket for data waiting approval and data approved
 
 class DatasetService:
 
@@ -68,7 +70,7 @@ class DatasetService:
             return {"message": "File upload failed", "status": 400}
 
         try:
-            save_dataset(collection, file_url, file_obj.content_type)
+            save_dataset(collection, file_url, file_obj.content_type)  
             return {"message": "File uploaded successfully", "status": 201}
         except ValueError as ve:
             return {"message": str(ve), "status": 400}
@@ -167,3 +169,36 @@ class DatasetService:
         except Exception as e:
             logger.error(f"Error updating file {file_obj.name}: {str(e)}")
             return {"error": "An error occurred while updating the file.", "status": 500}
+
+    def handle_dataset_move(collection_id, filename):
+        """
+        Updates a dataset file in the S3 bucket and database.
+
+        Args:
+            collection_id (str): The collection identifier.
+            file_obj (file-like object): The file to be updated.
+
+        Returns:
+            dict: Response message, file URL, and status code.
+        """
+        if not collection_id or not filename:
+            return {"error": "Collection ID and file are required.", "status": 400}
+
+        try:
+            collection = get_collection_by_id(collection_id)
+        except ObjectDoesNotExist:
+            return {"error": "Collection not found.", "status": 404}
+
+        try:
+            dataset_filename = f'{collection_id}-{filename}'
+            new_url = move_dataset_file(dataset_filename)
+            if new_url:
+                update_dataset_file(collection, new_url, 'application/zip')
+                return {"message": "File moved successfully", "new": filename, "status": 201}
+            else:
+                return {"error": "File moving was unsuccessful", "status": 404}
+
+        except Exception as e:
+            logger.error(f"Error moving file {filename}: {str(e)}")
+            return {"error": "An error occurred while updating the file.", "status": 500}
+

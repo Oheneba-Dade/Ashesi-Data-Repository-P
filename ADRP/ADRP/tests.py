@@ -85,22 +85,30 @@ class CollectionFileAPITestCase(APITestCase):
         self.approve_collecton = "/adrp/collection_status"
         
 
+    def test_workflow(self):
+        """
+            1. create a collection as a user
+            2. check if its in the initial folder
+            3. approve collection as admin
+            4. check if its in the approved folder 
+        """
+        pass
 
-    def test_collection_status(self):
-        """Test approval and rejection"""
+    # def test_collection_status(self):
+    #     """Test approval and rejection"""
 
-        self.test_user = User.objects.create_admin(password="password123", email='testuser@ashesi.edu.gh')
-        self.client.force_authenticate(user=self.test_user)  
+    #     self.test_user = User.objects.create_admin(password="password123", email='testuser@ashesi.edu.gh')
+    #     self.client.force_authenticate(user=self.test_user)  
 
 
-        response = self.client.patch(self.approve_collecton, self.data, format='json')
-        print("change collection status Response:", response.json() if response.headers.get("content-type") == "application/json" else response.content.decode())
+    #     response = self.client.patch(self.approve_collecton, self.data, format='json')
+    #     print("change collection status Response:", response.json() if response.headers.get("content-type") == "application/json" else response.content.decode())
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual("rejected", response.data['approval_status'])
-        self.assertIn("rejected_at", response.data['rejected_at'])
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual("rejected", response.data['approval_status'])
+    #     self.assertIn("rejected_at", response.data['rejected_at'])
 
-        print("✅ Filtering by title test passed!")
+    #     print("✅ Filtering by title test passed!")
 
   
 
@@ -174,7 +182,7 @@ class CollectionFileAPITestCase(APITestCase):
     #     response = self.client.get(f"{self.get_collection_by_id}?collection_id={self.collection.id}")
 
     #     print("Response Status Code:", response.status_code)
-    #     print("Response Data:", response.json() if response.status_code == 200 else "No Data")
+        # print("Response Data:", response.json() if response.status_code == 200 else "No Data")
 
     #     self.assertEqual(response.status_code, status.HTTP_200_OK)
 

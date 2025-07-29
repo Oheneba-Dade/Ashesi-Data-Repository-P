@@ -145,7 +145,14 @@ class CollectionsService:
 
                 if approval_status == "approved":
                     collection.approve(admin_user=admin_user)
+
+                    # move file from waiting approval to approved
+                    dataset_file = collection.files.first()
+                    if not dataset_file:
+                        return {"error": "No dataset file found for this collection", "status": 404}
+                    DatasetService.handle_dataset_move(collection_id=collection.id, filename=dataset_file.file_name)
                     CollectionsService.inform_contributor_of_collection_status("APPROVE_SUBMISSION", user)
+
                 elif approval_status == 'rejected':
                     collection.reject(admin_user=admin_user)
                     CollectionsService.inform_contributor_of_collection_status("REJECT_SUBMISSION", user)

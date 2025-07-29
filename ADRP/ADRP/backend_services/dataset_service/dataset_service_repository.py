@@ -1,14 +1,22 @@
 from ...models import DatasetFile
 import boto3
 from django.conf import settings
-from ...settings import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME, AWS_S3_REGION_NAME
-from botocore.exceptions import NoCredentialsError, PartialCredentialsError, BotoCoreError
+from ...settings import AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY, AWS_S3_REGION_NAME
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError, BotoCoreError,ClientError
 from .helper import extract_filename, rename
 import logging
 
 logger = logging.getLogger(__name__)
 
 LINK_EXPIRY_TIME = 3600 * 48
+
+
+
+# TODO: Add scanning of repository (using s3 security features - guard duty)
+# TODO: Use a separate s3 bucket for data waiting approval and data approved
+# TODO: Change how each of these functiosn use the buckets
+
+# set up a new bucket
 
 
 # s3  interactions
@@ -44,7 +52,7 @@ def upload_dataset_to_bucket(file_obj, filename, collection_id):
         filename = rename(filename=filename)
 
         s3_client = s3_client_connection()
-        bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+        bucket_name = settings.AWS_INITIAL_BUCKET
         key = f'{collection_id}-{filename}'  # Unique key for the file in the bucket
         s3_client.upload_fileobj(file_obj, bucket_name, key)
         return f"https://{bucket_name}.s3.amazonaws.com/{key}"
@@ -60,9 +68,55 @@ def upload_dataset_to_bucket(file_obj, filename, collection_id):
     return None
 
 
+
+
+
+def upload_dataset_to_waiting_bucket(file_obj, filename, collection_id):
+    """
+    Uploads a dataset file to an S3 bucket for prending approval and returns its URL.
+    
+    Args:
+        file_obj (file-like object): The file to be uploaded.
+        filename (str): The name of the file.
+        collection_id (str): The collection identifier to make the filename unique.
+    
+    Returns:
+        str: The URL of the uploaded file, or None if an error occurs.
+    """
+    try:
+        # rename file
+        filename = rename(filename=filename)
+
+        s3_client = s3_client_connection()
+        bucket_name = settings.AWS_INITIAL_BUCKET
+        key = f'{collection_id}-{filename}'  # Unique key for the file in the bucket
+        s3_client.upload_fileobj(file_obj, bucket_name, key)
+        return f"https://{bucket_name}.s3.amazonaws.com/{key}"
+    
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_obj}")
+    except (NoCredentialsError, PartialCredentialsError):
+        logger.error("AWS credentials not found or misconfigured")
+    except BotoCoreError as e:
+        logger.error(f"An error occurred with Boto3: {e}")
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+    return None
+
+
+
+def scan_file_in_bucket():
+    """
+        Scans files in buckets and returns the state of the file
+    """
+    pass
+
+
+
+
 def generate_dataset_url_from_bucket(filename):
     """
-    Generate a pre-signed URL for accessing a file in an S3 bucket.
+    Generate a pre-signed URL for accessing a file in Approved datasets S3 bucket.
     
     Args:
         filename (str): The name of the file stored in the bucket.
@@ -74,7 +128,7 @@ def generate_dataset_url_from_bucket(filename):
         s3_client = s3_client_connection()
         return s3_client.generate_presigned_url(
             'get_object', 
-            Params={'Bucket': settings.AWS_STORAGE_BUCKET_NAME, 'Key': filename}, 
+            Params={'Bucket': settings.AWS_APPROVED_BUCKET, 'Key': filename}, 
             ExpiresIn=LINK_EXPIRY_TIME
         )
     except Exception as e:
@@ -94,7 +148,7 @@ def delete_dataset_from_bucket(filename):
     """
     try:
         s3_client = s3_client_connection()
-        return s3_client.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=filename)
+        return s3_client.delete_object(Bucket=settings.AWS_APPROVED_BUCKET, Key=filename)
     except (NoCredentialsError, PartialCredentialsError):
         logger.error("AWS credentials not found or misconfigured")
     except BotoCoreError as e:
@@ -118,7 +172,7 @@ def update_dataset_on_bucket(filename, file_obj):
     try:
         s3_client = s3_client_connection()
         return s3_client.put_object(
-            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Bucket=settings.AWS_APPROVED_BUCKET,
             Body=file_obj,
             Key=filename,
         )
@@ -143,7 +197,7 @@ def get_dataset(collection_id):
     Returns:
         QuerySet: A QuerySet of dataset files belonging to the collection.
     """
-    return DatasetFile.objects.filter(collection_id=collection_id)
+    return DatasetFile.objects.filter(collection_id=collection_id).first()
 
 
 def save_dataset(collection, file_url, file_type):
@@ -203,6 +257,37 @@ def delete_dataset_file(collection, filename):
     """
     return DatasetFile.objects.filter(collection=collection, file_url__endswith=filename).delete()[0]
 
+def move_dataset_file(filename):
+    """
+        Moves a dataset file from the approvals bucket to the approved bucket.
+        
+        Args:
+            filename (str): The name of the file to be deleted {collection-id}-{filename}.
+        
+        Returns:
+            str: The URL of the uploaded file, or None if an error occurs.
+    """
+
+    source_bucket = settings.AWS_INITIAL_BUCKET
+    destination_bucket = settings.AWS_APPROVED_BUCKET
+    
+    s3_client = s3_client_connection()
+
+    copy_source = {
+        'Bucket': source_bucket,
+        'Key': filename
+    }
+    try:
+        # Copy the file to the destination bucket
+        s3_client.copy(CopySource=copy_source, Bucket=destination_bucket, Key=filename)
+
+        # Delete the original file from the source bucket
+        s3_client.delete_object(Bucket=source_bucket, Key=filename)
+        return f"https://{destination_bucket}.s3.amazonaws.com/{filename}"
+    except ClientError as e:
+        logging.error(f"Failed to move file '{filename}': {e}")
+        return None ###
+    
 
 
 def increment_dataset_download_count(collection_id):

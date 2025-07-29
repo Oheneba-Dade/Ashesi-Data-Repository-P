@@ -1,4 +1,5 @@
 from django.utils import timezone
+from ..statistics_service.statistics_service_repository import get_all_stats
 
 from ...models import OTP, User, Statistics
 
@@ -68,8 +69,8 @@ def clear_user_otps(user: User):
 def increment_global_user_count():
     """Increments the global user counter for the app"""
 
-    stats = Statistics.objects.filter(id=1).first()
-    # stats.user_count += 1
+    stats = get_all_stats()
+    stats.user_count += 1
     stats.save()
 
     return stats

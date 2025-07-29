@@ -274,7 +274,7 @@ class OTP(models.Model):
         ordering = ['-created_at']
 
 
-class   Statistics(models.Model):
+class Statistics(models.Model):
     download_count = models.IntegerField(default=0)
     view_count = models.IntegerField(default=0)
     author_count = models.IntegerField(default=0)
